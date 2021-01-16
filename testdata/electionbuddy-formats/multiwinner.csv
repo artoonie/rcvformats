@@ -1,0 +1,74 @@
+﻿Testing multi-winner elections with thresholds
+
+Members at Large
+**************************
+
+Round 1
+Candidate,Votes,Percentage
+James Wood,0.0,0%
+Nancy Harris,1.0,20.0%
+Thomas Harris,2.0,40.0%
+Sarah Taylor,1.0,20.0%
+Robert Walker,1.0,20.0%
+Mary White,0.0,0%
+
+Votes tallied: 5.0
+Abstentions: 0
+Threshold: 1.67
+
+Round 2
+Candidate,Votes,Percentage
+James Wood,0.0,0%
+Nancy Harris,1.33,26.6%
+Thomas Harris,1.67,33.4%
+Sarah Taylor,1.0,20.0%
+Robert Walker,1.0,20.0%
+Mary White,0.0,0%
+
+Votes tallied: 5.0
+Abstentions: 0
+Threshold: 1.67
+
+Round 3
+Candidate,Votes,Percentage
+James Wood,0.0,0%
+Nancy Harris,1.33,26.6%
+Thomas Harris,1.67,33.4%
+Sarah Taylor,1.0,20.0%
+Robert Walker,1.0,20.0%
+
+Votes tallied: 5.0
+Abstentions: 0
+Threshold: 1.67
+
+Round 4
+Candidate,Votes,Percentage
+Nancy Harris,1.33,26.6%
+Thomas Harris,1.67,33.4%
+Sarah Taylor,1.0,20.0%
+Robert Walker,1.0,20.0%
+
+Votes tallied: 5.0
+Abstentions: 0
+Threshold: 1.67
+
+Round 5
+Candidate,Votes,Percentage
+Nancy Harris,2.33,46.6%
+Thomas Harris,1.67,33.4%
+Sarah Taylor,1.0,20.0%
+
+Votes tallied: 5.0
+Abstentions: 0
+Threshold: 1.67
+
+Round 6
+Candidate,Votes,Percentage
+Nancy Harris,2.33,58.3%
+Thomas Harris,1.67,41.8%
+
+Votes tallied: 4.0
+Abstentions: 0
+Threshold: 1.33
+
+

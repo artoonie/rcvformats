@@ -1,0 +1,112 @@
+{
+  "$id": "https://github.com/artoonie/rcv/universal_tabulator.schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Universal RCV Tabulator JSON Schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "config": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Configuration options for the contest",
+      "properties": { 
+        "contest": {
+          "type": "string",
+          "description": "Name of the contest"
+        },
+        "date": {
+          "type": "string",
+          "format": "date",
+          "description": "Date of the contest"
+        },
+        "jurisdiction": {
+          "type": "string",
+          "description": "Jurisdiction holding the contest"
+        },
+        "office": {
+          "type": "string",
+          "description": "Office up for contest"
+        },
+        "threshold": {
+          "description": "Number representing a threshold to win. Note: if this differs in each round, just pick one number.",
+          "$ref": "#/$defs/decimal-as-string" 
+        }
+      }
+    },
+    "results": {
+      "type": "array",
+      "description": "Description of each round's events",
+      "items": { 
+        "type": "object",
+        "additionalProperties": false,
+        "description": "What happened in each successive round",
+        "properties": {
+          "round": {
+            "type": "number",
+            "description": "Round number, starting at 1, in ascending order",
+            "minimum": 1
+          },
+          "tally": {
+            "type": "object",
+            "description": "What happened in each successive round",
+            "patternproperties": {
+              "^.*$": {
+                "description": "Maps a candidate name to the number of votes they have on this round",
+                "$ref": "#/$defs/decimal-as-string" 
+              }
+            }
+          },
+          "tallyResults": {
+            "type": "array",
+            "description": "Describes what occured on this round: wins, eliminations, and transfers",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "description": "One candidate winning or being eliminated, and their transfers to remaining candidates",
+              "properties": {
+                "elected": {
+                  "type": "string",
+                  "description": "Name of candidate who was elected"
+                },
+                "eliminated": {
+                  "type": "string",
+                  "description": "Name of candidate who was eliminated"
+                },
+                "transfers": {
+                  "type": "object",
+                  "description": "Mapping from candidate names to how many votes they received",
+                  "patternproperties": {
+                    "^.*$": {
+                      "description": "How many votes this continuing candidate received from this elected or eliminated candidate",
+                      "$ref": "#/$defs/decimal-as-string" 
+                    }
+                  }
+                }
+              },
+              "oneOf": [
+                {
+                  "required": [
+                    "elected",
+                    "transfers"
+                  ]
+                },
+                {
+                  "required": [
+                    "eliminated",
+                    "transfers"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "decimal-as-string": {
+      "type": "string",
+      "pattern": "^\\d*[.]{0,1}\\d*$"
+    }
+  }
+}
