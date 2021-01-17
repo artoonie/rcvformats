@@ -3,6 +3,8 @@ Loads supported schemas (currently only one: the Universal Tabulator schema)
 """
 
 import abc
+import json
+import jsonschema
 
 
 class Schema(abc.ABC):
@@ -43,3 +45,36 @@ class Schema(abc.ABC):
         :return: Additional information on why the validation failed
         """
         return self._last_error
+
+
+class GenericJsonSchema(Schema):
+    """ Base class for a JSON Schema """
+    @property
+    @abc.abstractmethod
+    def schema_filename(self):
+        """ The JSON Schema filename """
+
+    def __init__(self):
+        filename = self.schema_filename
+        with open(filename, 'r') as file_object:
+            self.schema = json.load(file_object)
+
+        super().__init__()
+
+    def validate_file(self, filename):
+        try:
+            with open(filename, 'r') as file_object:
+                data = json.load(file_object)
+        except json.decoder.JSONDecodeError as error:
+            self._last_error = error
+            return False
+
+        return self.validate_data(data)
+
+    def validate_data(self, data):
+        try:
+            jsonschema.validate(data, self.schema)
+            return True
+        except jsonschema.exceptions.ValidationError as error:
+            self._last_error = error
+            return False

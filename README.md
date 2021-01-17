@@ -37,6 +37,5 @@ except Exception as e:
 ## Upcoming plans
 1. Allow any format to be converted both to and from the Universal Tabulator format
 2. Implement schema validation and migration for the ElectionBuddy CSV
-3. Support the Opavote format
-4. More unit tests
-5. Create both structure and data validations for the Universal Tabulator format
+3. More unit tests
+4. Create both structure and data validations for the Universal Tabulator format

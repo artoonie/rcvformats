@@ -1,0 +1,186 @@
+{
+  "$id": "https://github.com/artoonie/rcvformats/blob/main/rcvformats/jsonschemas/opavote.schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Opavote JSON Schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "candidates": {
+      "type": "array",
+      "description": "List of all candidates",
+      "items": {
+        "type": "string",
+        "description": "Candidate name"
+      }
+    },
+    "method": {
+      "type": "string",
+      "description": "RCV tabulation method"
+    },
+    "n_seats": {
+      "type": "number",
+      "description": "Number of seats to fill",
+      "minimum": 1
+    },
+    "n_valid_votes": {
+      "type": "number",
+      "description": "Number of valid ballots",
+      "minimum": 1
+    },
+    "n_votes": {
+      "type": "number",
+      "description": "Total ballots, including invalid ballots",
+      "minimum": 1
+    },
+    "options": {
+      "type": "array",
+      "description": "The opavote configuration options",
+      "items": {
+        "type": "array",
+        "description": "Info about one configuration type",
+        "items": [
+          {
+            "type": "string",
+            "description": "Name of the configuration option"
+          },
+          {
+            "type": "string",
+            "description": "What the option is set to"
+          }
+        ]
+      }
+    },
+    "precision": {
+      "type": "number",
+      "description": "To be figured out - I'm not sure"
+    },
+    "rounds": {
+      "type": "array",
+      "description": "Description of what happens in each round",
+      "items": {
+        "type": "object",
+        "description": "A single round",
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "type": "object",
+            "description": "Text to describe what happened in this round",
+            "additionalProperties": false,
+            "properties": {
+              "candidates": {
+                "$ref": "#/$defs/candidate-indices",
+                "description": "Which candidates are eliminated or elected"
+              },
+              "desc": {
+                "type": "string",
+                "description": "Human-readable description of the round"
+              },
+              "type": {
+                "type": "string",
+                "description": "The action taken",
+                "enum": ["first", "eliminate"]
+              }
+            },
+            "required": [
+              "desc",
+              "type"
+            ]
+          },
+          "continuing": {
+            "$ref": "#/$defs/candidate-indices",
+            "description": "Which candidates are continuing"
+          },
+          "count": {
+            "type": "array",
+            "description": "The number of votes each candidate currently has",
+            "items": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "exhausted": {
+            "type": "number",
+            "description": "Number of exhausted ballots"
+          },
+          "losers": {
+            "$ref": "#/$defs/candidate-indices",
+            "description": "Which candidates have lost so far - cumulative"
+          },
+          "msg": {
+            "type": "string",
+            "description": "Human-readable summary of the round"
+          },
+          "n": {
+            "type": "number",
+            "description": "Current round index, 1-indexed",
+            "minimum": 1
+          },
+          "winners": {
+            "$ref": "#/$defs/candidate-indices",
+            "description": "Which candidates were elected"
+          }
+        },
+        "required": [
+          "count",
+          "losers",
+          "winners"
+        ]
+      }
+    },
+    "tie_breaks": {
+      "type": "array",
+      "description": "If any tie-breaking happened, how did it happen?",
+      "items": {
+        "type": "array",
+        "description": "A round's tie-breaking data",
+        "items": [
+          {
+            "type": "number",
+            "description": "Which round? 1-indexed",
+            "minimum": 1
+          },
+          {
+            "$ref": "#/$defs/candidate-indices",
+            "description": "Which candidates is the tie-break between"
+          },
+          {
+            "$ref": "#/$defs/candidate-indices",
+            "description": "Which candidate(s) won the tie-break"
+          }
+        ]
+      }
+    },
+    "title": {
+      "type": "string",
+      "description": "Title of the election"
+    },
+    "version": {
+      "type": "string",
+      "description": "Version of this schema - must be 1.0",
+      "const": "1.0"
+    },
+    "winners": {
+      "$ref": "#/$defs/candidate-indices",
+      "description": "List of all winners"
+    },
+    "withdrawn": {
+      "$ref": "#/$defs/candidate-indices",
+      "description": "Which candidates withdrew before the election began"
+    }
+  },
+  "required": [
+    "candidates",
+    "rounds",
+    "title",
+    "version"
+  ],
+  "$defs": {
+    "candidate-indices": {
+      "type": "array",
+      "items": {
+        "type": "number",
+        "minimum": 0
+      }
+    }
+  }
+}
