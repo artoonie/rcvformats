@@ -10,6 +10,7 @@ class CouldNotConvertException(Exception):
     to a bug in the software.
     """
 
+
 class Conversion(abc.ABC):
     def __init__(self):
         """ Initializes common data """
@@ -31,7 +32,6 @@ class Conversion(abc.ABC):
         except Exception as e:
             raise CouldNotConvertException("Unexpected error")
         return ut_format
-
 
     def parse(self, filename):
         """

@@ -15,4 +15,4 @@ def test_schemas():
     converter = electionbuddy.CSVReader()
     for filename in filenames:
         converter.parse(filename)
-        output = converter.to_universal_tabulator_format()
+        converter.to_universal_tabulator_format()

@@ -7,11 +7,13 @@ import time
 
 from rcvformats.conversions.base import Conversion
 
+
 class RawFileData:
     """
     Structure to hold the raw data read from the file.
     Parses the data directly into a simple format to make it easier for CSVReader to work with.
     """
+
     def __init__(self, file_obj):
         self.file_obj = file_obj
         self.title = self.read_line_as_str()
@@ -108,7 +110,7 @@ class CSVReader(Conversion):
             'contest': raw_data.title.strip(),
             'threshold': str(self._get_threshold(raw_data)),
             'date': time.strftime('%Y-%m-%d', date_file_created)
-            
+
         }
 
         # Loop over each round
@@ -164,7 +166,7 @@ class CSVReader(Conversion):
         # Don't include negative surplus-vote transfers: those are implicit.
         if round_i != len(rounds) - 1:
             # The candidate-to-votes dict of the next round
-            nextround_candidates = rounds[round_i+1]['candidates']
+            nextround_candidates = rounds[round_i + 1]['candidates']
 
             # Check who is no longer around next round
             eliminated_names = [name for name in candidates if name not in nextround_candidates]
@@ -177,7 +179,7 @@ class CSVReader(Conversion):
 
             # candidate-to-vote-differential
             vote_delta = {
-                to_name: numvotes_next_round[to_name] - candidates[to_name] \
+                to_name: numvotes_next_round[to_name] - candidates[to_name]
                 for to_name in candidates
             }
         else:
@@ -210,7 +212,7 @@ class CSVReader(Conversion):
         votes_subtracted = -sum(d for d in vote_delta.values() if d < 0)
 
         weights = {
-            name: -vote_delta[name] / votes_subtracted if votes_subtracted != 0 else 1 \
+            name: -vote_delta[name] / votes_subtracted if votes_subtracted != 0 else 1
             for name in transferring_candidates
         }
 
@@ -245,7 +247,8 @@ class CSVReader(Conversion):
         # Elected candidates is any candidate over the threshold
         candidates = rounds[round_i]['candidates']
         threshold = self._threshold_for_round(rounds, round_i)
-        elected_names = [name for name in candidates if candidates[name] >= threshold and name not in self.already_elected]
+        elected_names = [name for name in candidates if candidates[name]
+                         >= threshold and name not in self.already_elected]
         self.already_elected.extend(elected_names)
 
         # Gather data we need about the next round (and how it compares to this round)
@@ -268,8 +271,8 @@ class CSVReader(Conversion):
             for from_name in names:
                 tallyResult = {}
                 tallyResult[method] = from_name
-                tallyResult['transfers']  = {
-                    to_name: vote_delta[to_name] * weights[from_name] \
+                tallyResult['transfers'] = {
+                    to_name: vote_delta[to_name] * weights[from_name]
                     for to_name in nextround_candidates
                 }
                 tallyResults.append(tallyResult)
