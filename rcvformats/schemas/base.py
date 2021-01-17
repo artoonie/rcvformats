@@ -3,8 +3,6 @@ Loads supported schemas (currently only one: the Universal Tabulator schema)
 """
 
 import abc
-import json
-import jsonschema
 
 
 class Schema(abc.ABC):
@@ -23,9 +21,17 @@ class Schema(abc.ABC):
         """
 
     @abc.abstractmethod
-    def validate(self, filename):
+    def validate_file(self, filename):
         """
-        Which version number
+        Opens the file and validates that it matches the expected schema
+        :param filename: The JSON filename for the tabulated results
+        :return: whether or not the validation failed
+        """
+
+    @abc.abstractmethod
+    def validate_data(self, data):
+        """
+        Reads the data and validates that it matches the expected schema
         :param filename: The JSON filename for the tabulated results
         :return: whether or not the validation failed
         """
@@ -37,28 +43,3 @@ class Schema(abc.ABC):
         :return: Additional information on why the validation failed
         """
         return self._last_error
-
-
-class UniversalTabulatorSchemaV0(Schema):
-    """ Schema for the initial version of the Universal RCV Tabulator """
-
-    def __init__(self):
-        filename = 'rcvformats/schemas/universaltabulator.schema.json'
-        with open(filename, 'r') as file_object:
-            self.schema = json.load(file_object)
-
-        super().__init__()
-
-    def version(self):
-        return "Unversioned:V0"
-
-    def validate(self, filename):
-        with open(filename, 'r') as file_object:
-            data = json.load(file_object)
-
-        try:
-            jsonschema.validate(data, self.schema)
-            return True
-        except jsonschema.exceptions.ValidationError as error:
-            self._last_error = error
-            return False
