@@ -3,11 +3,15 @@ Tests that our example JSONs all pass validation
 """
 
 from rcvformats import schemas
-from rcvformats import validate
 
 
-def test_multiwinner_valid():
+def test_universal_tabulator_formats_valid():
     """ Verifies that the multiwinner format is valid """
-    multiwinner_filename = 'testdata/universal-tabulator-formats/macomb-multiwinner.json'
-    schema = schemas.latest_universal_tabulator_schema()
-    validate.validate(multiwinner_filename, schema)
+    filenames = [
+        'testdata/universal-tabulator-formats/macomb-multiwinner.json',
+        'testdata/universal-tabulator-formats/one-round.json',
+        'testdata/universal-tabulator-formats/simple.json'
+    ]
+    schema = schemas.UniversalTabulatorSchemaV0()
+    for filename in filenames:
+        schema.validate(filename)
