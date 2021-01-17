@@ -1,11 +1,18 @@
+"""
+Validators for a given schema
+"""
+
 import json
 import jsonschema
 
-class Validator:
-    def __init__(self):
-        pass
 
-    def validate(self, filename, schema):
-        with open(filename, 'r') as f:
-            data = json.load(f)
-            jsonschema.validate(data, schema)
+def validate(filename, schema):
+    """
+    Validates that the schema is respected
+    :param filename: The JSON filename for the tabulated results
+    :param schema: The schema data, as provided by schemas.py
+    :raises jsonschema.exceptions.ValidationError' On any error
+    """
+    with open(filename, 'r') as file_object:
+        data = json.load(file_object)
+        jsonschema.validate(data, schema)
