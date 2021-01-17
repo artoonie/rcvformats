@@ -11,7 +11,7 @@ class CouldNotConvertException(Exception):
     """
 
 
-class Conversion(abc.ABC):
+class Converter(abc.ABC):
     def __init__(self):
         """ Initializes common data """
         self.schema = universaltabulator.SchemaV0()

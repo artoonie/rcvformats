@@ -14,4 +14,4 @@ def test_universal_tabulator_formats_valid():
     ]
     schema = universaltabulator.SchemaV0()
     for filename in filenames:
-        schema.validate_file(filename)
+        assert schema.validate_file(filename)

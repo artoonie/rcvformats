@@ -5,7 +5,7 @@ Reads an ElectionBuddy CSV results file, writes to the standard format
 import os
 import time
 
-from rcvformats.conversions.base import Conversion
+from rcvformats.conversions.base import Converter
 
 
 class RawFileData:
@@ -92,7 +92,7 @@ class RawFileData:
                 'threshold': threshold}
 
 
-class CSVReader(Conversion):
+class ElectionBuddyConverter(Converter):
     """
     Reads an electionbuddy-formatted CSV file. Note that this
     use a generic text file reader, not a CSV reader, because
