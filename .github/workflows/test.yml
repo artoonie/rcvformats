@@ -80,6 +80,7 @@ jobs:
         WITH_V: true
         DEFAULT_BUMP: patch
         INITIAL_VERSION: 0.0.1
+        RELEASE_BRANCHES: main
     - name: Build a binary wheel and a source tarball
       env:
         TAG_FROM_GITHUB_ACTIONS: ${{ steps.tag_version.outputs.new_tag }}
