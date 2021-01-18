@@ -1,5 +1,8 @@
-import abc
+"""
+Interface and exceptions for all converters
+"""
 
+import abc
 
 from rcvformats.schemas import universaltabulator
 
@@ -13,50 +16,38 @@ class CouldNotConvertException(Exception):
 
 
 class Converter(abc.ABC):
+    """ Interface for converters """
+
     def __init__(self):
         """ Initializes common data """
         self.schema = universaltabulator.SchemaV0()
-        self.has_been_parsed = False
 
-    def to_universal_tabulator_format(self):
+    def convert_to_ut_and_validate(self, filename):
         """
-        Returns a dictionary which you can serialize to the Universal RCV Tabulator format.
+        Calls :func:`~convert_to_ut`, then validates it with the Universal Tabulator schema.
 
+        :return: Guaranteed-valid Universal Tabulator data
         :raises CouldNotConvertException: If the conversion could not complete
         """
-        if not self.has_been_parsed:
-            return CouldNotConvertException("You must call parse() first")
-
         try:
-            ut_format = self._to_universal_tabulator_format()
+            ut_format = self.convert_to_ut(filename)
             if not self.schema.validate_data(ut_format):
                 raise CouldNotConvertException(self.schema.last_error())
-        except Exception as e:
-            raise CouldNotConvertException("Unexpected error")
+        except Exception as unknown_error:
+            raise CouldNotConvertException from unknown_error
+
         return ut_format
 
-    def parse(self, filename):
-        """
-        Parses the file object and stores it internally for querying
-        """
-        self._parse(filename)
-        self.has_been_parsed = True
-
+    @classmethod
     @abc.abstractmethod
-    def _parse(self, filename):
+    def convert_to_ut(cls, filename):
         """
-        Internal method called by :func:`~parse`
-        Parses the file object and stores it internally for querying
+        Parses the file object and returns the parsed data
 
         :param filename: The filename to parse
-        """
-
-    @abc.abstractmethod
-    def _to_universal_tabulator_format(self):
-        """
-        Internal method called by to_universal_tabulator_format():
-        Returns a dictionary representation of the Universal RCV Tabulator format,
-        which will be sanity-checked for correctness by to_universal_tabulator_format
+        :return: The Universal Tabulator representation of this data.\
+                 Call :func:`~convert_to_ut_and_validate` to guarantee that \
+                 it matches the Universal Tabulator schema.
         """
 
 
@@ -74,7 +65,8 @@ class GenericGuessAtTransferConverter(Converter):
     candidates are transferring their votes.
     """
 
-    def _weights_for_each_transfer(self, eliminated_names, elected_names, vote_delta):
+    @classmethod
+    def _weights_for_each_transfer(cls, eliminated_names, elected_names, vote_delta):
         """
         :param eliminated_names: the names of each eliminated candidate
         :param elected_names: the names of each elected candidate
@@ -106,7 +98,8 @@ class GenericGuessAtTransferConverter(Converter):
 
         return weights
 
-    def _compute_vote_deltas_from_tally(self, tally_this_round, tally_next_round):
+    @classmethod
+    def _compute_vote_deltas_from_tally(cls, tally_this_round, tally_next_round):
         """
         Returns the vote deltas between this round and next round. The two tally arguments
         must match the tally format in the Universal Tabulator format.
@@ -134,7 +127,8 @@ class GenericGuessAtTransferConverter(Converter):
             for to_name in tally_this_round
         }
 
-    def compute_vote_deltas_for_round(self, ut_rounds_tally_only, round_i):
+    @classmethod
+    def compute_vote_deltas_for_round(cls, ut_rounds_tally_only, round_i):
         """
         Gathers some data and passes it on to :func:`~_compute_vote_deltas_from_tally`
 
@@ -149,9 +143,10 @@ class GenericGuessAtTransferConverter(Converter):
             return {}
         tally_this_round = ut_rounds_tally_only[round_i]['tally']
         tally_next_round = ut_rounds_tally_only[round_i + 1]['tally']
-        return self._compute_vote_deltas_from_tally(tally_this_round, tally_next_round)
+        return cls._compute_vote_deltas_from_tally(tally_this_round, tally_next_round)
 
-    def guess_at_tally_results(self, eliminated_names, elected_names, vote_delta):
+    @classmethod
+    def guess_at_tally_results(cls, eliminated_names, elected_names, vote_delta):
         """
         Computes the tallyResult, the difference between this round and the next
         See the description of @_compute_tally_results to understand why, in the case of
@@ -163,7 +158,7 @@ class GenericGuessAtTransferConverter(Converter):
                            between this round and the next round.
         :return: The contents of the tallyResults dict
         """
-        weights = self._weights_for_each_transfer(eliminated_names, elected_names, vote_delta)
+        weights = cls._weights_for_each_transfer(eliminated_names, elected_names, vote_delta)
 
         # Loop over each eliminated or elected candidate and generate the transfers to
         # continuing candidates

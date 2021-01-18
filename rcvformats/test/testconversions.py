@@ -10,9 +10,8 @@ from rcvformats.conversions import opavote
 
 
 def _assert_conversion_correct(file_in, file_out, converter):
-    """ Asserts that converter.parse(file_in) = file_out """
-    converter.parse(file_in)
-    actual_data = converter.to_universal_tabulator_format()
+    """ Asserts that converter.convert_to_ut(file_in) = file_out """
+    actual_data = converter.convert_to_ut_and_validate(file_in)
     with open(file_out, 'r') as file_obj:
         expected_data = json.load(file_obj)
     nose.tools.assert_dict_equal(actual_data, expected_data)
@@ -27,8 +26,7 @@ def test_electionbuddy_conversions_succeed():
     ]
     converter = electionbuddy.ElectionBuddyConverter()
     for filename in filenames:
-        converter.parse(filename)
-        converter.to_universal_tabulator_format()
+        converter.convert_to_ut_and_validate(filename)
 
 
 def test_opavote_conversion_accurate():

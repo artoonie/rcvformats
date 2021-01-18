@@ -1,3 +1,6 @@
+![Python package](https://github.com/artoonie/rcvformats/workflows/Python%20package/badge.svg)
+[![Documentation Status](https://readthedocs.org/projects/rcvformats/badge/?version=latest)](https://rcvformats.readthedocs.io/en/latest/?badge=latest)
+
 # RCV Formats
 A collection of parsers and converters from various RCV formats to the standard [Universal RCV Tabulator format](https://www.rankedchoicevoting.org/universal_rcv_tabulator).
 
@@ -36,8 +39,7 @@ from rcvformats.conversions import electionbuddy
 
 converter = electionbuddy.ElectionBuddyConverter()
 try:
-  converter.parse(filename)
-  converter.to_universal_tabulator_format()
+  converter.convert_to_ut(filename)
 except Exception as e:
   print("Errors: ", e)
 ```

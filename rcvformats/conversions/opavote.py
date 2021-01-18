@@ -12,7 +12,8 @@ class OpavoteConverter(GenericGuessAtTransferConverter):
     Reads an opavote-formatted JSON file.
     """
 
-    def _get_eliminated_names(self, candidate_names, rounds, round_i):
+    @classmethod
+    def _get_eliminated_names(cls, candidate_names, rounds, round_i):
         """
         Opavote format places losses on the round after they happen, whereas
         the Universal Tabulator format places it on the previous round.
@@ -30,7 +31,8 @@ class OpavoteConverter(GenericGuessAtTransferConverter):
         ids = rounds[round_i + 1]['losers']
         return [candidate_names[i] for i in ids]
 
-    def _get_elected_names(self, candidate_names, rounds, round_i):
+    @classmethod
+    def _get_elected_names(cls, candidate_names, rounds, round_i):
         """
         :param candidate_names: in-order names
         :param rounds: rounds data, direct from the Opavote format
@@ -40,11 +42,13 @@ class OpavoteConverter(GenericGuessAtTransferConverter):
         ids = rounds[round_i]['winners']
         return [candidate_names[i] for i in ids]
 
-    def _votes_on_round(self, candidate_i, rounds, round_i):
+    @classmethod
+    def _votes_on_round(cls, candidate_i, rounds, round_i):
         """ Number of votes the corresponding candidate had on round_i """
         return rounds[round_i]['count'][candidate_i]
 
-    def _parse(self, filename):
+    @classmethod
+    def convert_to_ut(cls, filename):
         with open(filename, 'r') as file_object:
             data = json.load(file_object)
 
@@ -63,29 +67,30 @@ class OpavoteConverter(GenericGuessAtTransferConverter):
                 'round': round_i + 1,
                 'tally': {}
             }
-            for candidate_i in range(len(candidate_names)):
-                votes = self._votes_on_round(candidate_i, rounds, round_i)
+            for candidate_i, _ in enumerate(candidate_names):
+                votes = cls._votes_on_round(candidate_i, rounds, round_i)
                 name = candidate_names[candidate_i]
                 ut_round['tally'][name] = votes
             ut_rounds.append(ut_round)
 
-        # Fill out rounds['tallyResults'] based on rounds['tally']
+        cls._fill_in_tallyresults(rounds, candidate_names, ut_rounds)
+
+        return {'config': ut_config, 'results': ut_rounds}
+
+    @classmethod
+    def _fill_in_tallyresults(cls, rounds, candidate_names, ut_rounds):
+        """ Fill out rounds['tallyResults'] based on rounds['tally'] """
         already_eliminated = set()
-        for round_i, round_data in enumerate(rounds):
+        for round_i, _ in enumerate(rounds):
             # Get who was elected and eliminated
-            eliminated_names = self._get_eliminated_names(candidate_names, rounds, round_i)
-            elected_names = self._get_elected_names(candidate_names, rounds, round_i)
+            eliminated_names = cls._get_eliminated_names(candidate_names, rounds, round_i)
+            elected_names = cls._get_elected_names(candidate_names, rounds, round_i)
             # Opavote accumulates eliminated candidates. Clean that up.
             eliminated_names = [n for n in eliminated_names if n not in already_eliminated]
             already_eliminated.update(eliminated_names)
             # Get how the votes change between this round and next
-            vote_delta = self.compute_vote_deltas_for_round(ut_rounds, round_i)
+            vote_delta = cls.compute_vote_deltas_for_round(ut_rounds, round_i)
             # Use that to compute the tallyResults structure
-            tallyResults = self.guess_at_tally_results(eliminated_names, elected_names, vote_delta)
+            tally_results = cls.guess_at_tally_results(eliminated_names, elected_names, vote_delta)
             # Store it, completing the structure for this round
-            ut_rounds[round_i]['tallyResults'] = tallyResults
-
-        self.ut_formatted_data = {'config': ut_config, 'results': ut_rounds}
-
-    def _to_universal_tabulator_format(self):
-        return self.ut_formatted_data
+            ut_rounds[round_i]['tallyResults'] = tally_results

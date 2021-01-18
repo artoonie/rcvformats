@@ -40,8 +40,8 @@ class RawFileData:
         """ Start iterating over the CSV for each round """
         self.rounds = []
         while self.file_obj:
-            roundText = self.read_line_as_str()
-            if not roundText.startswith("Round"):
+            round_text = self.read_line_as_str()
+            if not round_text.startswith("Round"):
                 assert len(self.rounds) > 0
                 break
 
@@ -75,8 +75,8 @@ class RawFileData:
             elif line.startswith('Threshold: '):
                 # Threshold line is optional
                 line = self.read_line_as_str()
-                thresholdStr = line[len('Threshold: '):]
-                threshold = float(thresholdStr)
+                threshold_str = line[len('Threshold: '):]
+                threshold = float(threshold_str)
             else:
                 assert line.strip() == ''
                 break
@@ -97,20 +97,29 @@ class ElectionBuddyConverter(GenericGuessAtTransferConverter):
     but it also has miscellaneous title lines.
     """
 
-    def _parse(self, filename):
+    def convert_to_ut(self, filename):
         with open(filename, 'r') as file_object:
             raw_data = RawFileData(file_object)
 
         # Create configuration, assuming date of election is the file creation date
-        ut_config = {
+        config = {
             'contest': raw_data.title.strip(),
             'threshold': str(self._get_threshold(raw_data))
         }
 
         # Loop over each round, first filling in just the tally
+        ut_rounds = self._get_round_data_without_tallyresults(raw_data.rounds)
+
+        # Then, compute the tally results
+        self._fill_in_tallyresults_from_tally(raw_data.rounds, ut_rounds)
+
+        return {'config': config, 'results': ut_rounds}
+
+    @classmethod
+    def _get_round_data_without_tallyresults(cls, rounds):
+        """ Generates the ut_rounds data without tallyResults """
         ut_rounds = []
-        self.already_elected = []
-        for round_i, round_data in enumerate(raw_data.rounds):
+        for round_i, round_data in enumerate(rounds):
             ut_round = {
                 'round': round_i + 1,
                 'tally': {}
@@ -119,25 +128,25 @@ class ElectionBuddyConverter(GenericGuessAtTransferConverter):
             for candidate, votes in candidates.items():
                 ut_round['tally'][candidate] = votes
             ut_rounds.append(ut_round)
+        return ut_rounds
 
-        # Then, compute the tally results
-        for round_i, round_data in enumerate(raw_data.rounds):
+    @classmethod
+    def _fill_in_tallyresults_from_tally(cls, rounds, ut_rounds):
+        """ Fills in tallyResults in ut_rounds """
+        already_elected_set = set()
+        for round_i in range(len(rounds)):
             # Get who was elected and eliminated
-            elected_names = self._get_elected_names(raw_data.rounds, round_i)
-            eliminated_names = self._get_eliminated_names(raw_data.rounds, round_i)
+            elected_names = cls._get_elected_names(rounds, round_i, already_elected_set)
+            eliminated_names = cls._get_eliminated_names(rounds, round_i)
             # Get how the votes change between this round and next
-            vote_delta = self.compute_vote_deltas_for_round(ut_rounds, round_i)
+            vote_delta = cls.compute_vote_deltas_for_round(ut_rounds, round_i)
             # Use that to compute the tallyResults structure
-            tallyResults = self.guess_at_tally_results(eliminated_names, elected_names, vote_delta)
+            tally_results = cls.guess_at_tally_results(eliminated_names, elected_names, vote_delta)
             # Store it, completing the structure for this round
-            ut_rounds[round_i]['tallyResults'] = tallyResults
+            ut_rounds[round_i]['tallyResults'] = tally_results
 
-        self.ut_formatted_data = {'config': ut_config, 'results': ut_rounds}
-
-    def _to_universal_tabulator_format(self):
-        return self.ut_formatted_data
-
-    def _threshold_for_round(self, rounds, round_i):
+    @classmethod
+    def _threshold_for_round(cls, rounds, round_i):
         """
         If the threshold is not provided in each round, assume it is half of the number
         of voters present in the last round. This means that if the thresold is not
@@ -148,11 +157,12 @@ class ElectionBuddyConverter(GenericGuessAtTransferConverter):
         if rounds[round_i]['threshold']:
             return rounds[round_i]['threshold']
 
-        lastRound = rounds[-1]
-        numVotersInLastRound = sum([v for k, v in lastRound['candidates'].items()])
-        return numVotersInLastRound / 2.0
+        last_round = rounds[-1]
+        num_voters_in_last_round = sum([v for k, v in last_round['candidates'].items()])
+        return num_voters_in_last_round / 2.0
 
-    def _get_eliminated_names(self, rounds, round_i):
+    @classmethod
+    def _get_eliminated_names(cls, rounds, round_i):
         if round_i == len(rounds) - 1:
             return []
 
@@ -162,24 +172,26 @@ class ElectionBuddyConverter(GenericGuessAtTransferConverter):
         # Check who is no longer around next round
         return list(thisround_candidates - nextround_candidates)
 
-    def _get_elected_names(self, rounds, round_i):
+    @classmethod
+    def _get_elected_names(cls, rounds, round_i, already_elected_set):
         """ :return: a list of names of candidates elected on this round """
         candidates = rounds[round_i]['candidates']
-        threshold = self._threshold_for_round(rounds, round_i)
+        threshold = cls._threshold_for_round(rounds, round_i)
         elected_names = [name for name in candidates if candidates[name]
-                         >= threshold and name not in self.already_elected]
-        self.already_elected.extend(elected_names)
+                         >= threshold and name not in already_elected_set]
+        already_elected_set.update(elected_names)
         return elected_names
 
-    def _get_threshold(self, csvData):
+    @classmethod
+    def _get_threshold(cls, csv_data):
         """
         Returns the threshold for the overall election, which doesn't make a lot of sense
         for dynamic-threshold multiwinner elections, but we mark it as just the last
         threshold in the file if the file contains thresholds.
         """
-        lastRound = csvData.rounds[-1]
-        if lastRound['threshold']:
-            return lastRound['threshold']
-        else:
-            numVotersInLastRound = sum([v for k, v in lastRound['candidates'].items()])
-            return numVotersInLastRound / 2.0
+        last_round = csv_data.rounds[-1]
+        if last_round['threshold']:
+            return last_round['threshold']
+
+        num_voters_in_last_round = sum([v for k, v in last_round['candidates'].items()])
+        return num_voters_in_last_round / 2.0
