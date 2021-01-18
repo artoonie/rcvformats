@@ -64,12 +64,18 @@ jobs:
       with:
         fetch-depth: '0'
     - name: Bump version and push tag
-      uses: anothrNick/github-tag-action@1.26.0
+      id: tag_version
+      uses: mathieudutour/github-tag-action@v5.1
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Create a GitHub release
+      uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        WITH_V: true
-        DEFAULT_BUMP: patch
-        INITIAL_VERSION: 0.0.1
+      with:
+        tag_name: ${{ steps.tag_version.outputs.new_tag }}
+        release_name: Release ${{ steps.tag_version.outputs.new_tag }}
+        body: ${{ steps.tag_version.outputs.changelog }}
   deploy:
     needs: tagger
     runs-on: ubuntu-20.04
@@ -87,7 +93,7 @@ jobs:
         pip install -r requirements.txt
     - name: Build a binary wheel and a source tarball
       env:
-        TAG_FROM_GITHUB_ACTIONS: ${{ needs.tagger.outputs.tag }}
+        TAG_FROM_GITHUB_ACTIONS: ${{ steps.tag_version.outputs.new_tag }}
       run: >-
         python3 setup.py sdist bdist_wheel
     - name: Publish distribution 📦 to Test PyPI
