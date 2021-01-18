@@ -4,7 +4,8 @@ A collection of parsers and converters from various RCV formats to the standard 
 ## Validation
 The following schemas can be validated. Currently, validation does not guarantee they can be imported: the validators make no sanity checks to ensure the math works out, or that there are no typos in candidate names. Rather, they only validate the structure.
 
-1. The Universal RCV Tabulator Format
+1. The Universal RCV Tabulator format
+1. The Opavote format
 
 You can run the validation and examine errors via:
 ```python
@@ -17,9 +18,16 @@ if not is_valid:
   print(schema.get_last_error())
 ```
 
+Valid schema validators are:
+```python
+from rcvformats.schemas.universaltabulator import SchemaV0
+from rcvformats.schemas.opavote import SchemaV1_0
+```
+
 ## Conversion
 You can convert from any of the supported formats and to the Universal RCV Tabulator format. The currently supported formats are:
 1. ElectionBuddy CSVs
+1. Opavote JSONs
 
 You can run the conversion via:
 
@@ -32,6 +40,12 @@ try:
   converter.to_universal_tabulator_format()
 except Exception as e:
   print("Errors: ", e)
+```
+
+Valid converters are:
+```python
+from rcvformats.conversions.electionbuddy import ElectionBuddyConverter
+from rcvformats.conversions.opavote import OpavoteConverter
 ```
 
 ## Upcoming plans
