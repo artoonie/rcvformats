@@ -55,6 +55,7 @@ jobs:
       run: |
         nosetests
   tag-and-release:
+    if: github.ref == 'refs/tags/main'
     needs:
     - test
     - lint
@@ -87,7 +88,6 @@ jobs:
       run: >-
         python3 setup.py sdist bdist_wheel
     - name: Publish distribution 📦 to PyPI
-      if: startsWith(github.ref, 'refs/tags')
       uses: pypa/gh-action-pypi-publish@master
       with:
         password: ${{ secrets.PYPI_API_TOKEN }}
