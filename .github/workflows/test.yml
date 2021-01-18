@@ -70,6 +70,7 @@ jobs:
         WITH_V: true
         DEFAULT_BUMP: patch
         INITIAL_VERSION: 0.0.1
+        RELEASE_BRANCHES: .*
   deploy:
     needs: tagger
     runs-on: ubuntu-20.04
@@ -87,7 +88,7 @@ jobs:
         pip install -r requirements.txt
     - name: Build a binary wheel and a source tarball
       env:
-        TAG_FROM_GITHUB_ACTIONS: ${{ needs.tagger.outputs.tag }}
+        TAG_FROM_GITHUB_ACTIONS: ${{ needs.tagger.outputs.new_tag }}
       run: >-
         python3 setup.py sdist bdist_wheel
     - name: Publish distribution 📦 to Test PyPI
