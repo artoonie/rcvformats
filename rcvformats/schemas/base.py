@@ -23,7 +23,6 @@ class Schema(abc.ABC):
         :return: A string represting the version number
         """
 
-    @abc.abstractmethod
     def validate_file(self, filename):
         """
         Opens the file and validates that it matches the expected schema
@@ -31,23 +30,24 @@ class Schema(abc.ABC):
         :param filename: The JSON filename for the tabulated results
         :return: whether or not the validation failed
         """
+        with open(filename, 'r') as file_obj:
+            return self.validate_file_object(file_obj)
 
     @abc.abstractmethod
-    def validate_data(self, data):
+    def validate_file_object(self, file_object):
         """
-        Reads the data and validates that it matches the expected schema
-
-        :param filename: The JSON filename for the tabulated results
-        :return: whether or not the validation failed
+        Same as func:`~validate_file` but accepts a file object instead of a filename
         """
 
     def last_error(self):
         """
         If validate() failed, this method will provide more detailed information
-        on the error. The details vary by class type.
+        on the error. The details vary by class type, though it will always be of type
+        Exception
 
-        :return: Additional information on why the validation failed
+        :return: Exception with additional information on why the validation failed
         """
+        assert self._last_error is None or isinstance(self._last_error, Exception)
         return self._last_error
 
 
@@ -65,11 +65,10 @@ class GenericJsonSchema(Schema):
 
         super().__init__()
 
-    def validate_file(self, filename):
+    def validate_file_object(self, file_object):
         """ Opens the file and runs :func:`~validate_data` """
         try:
-            with open(filename, 'r') as file_object:
-                data = json.load(file_object)
+            data = json.load(file_object)
         except json.decoder.JSONDecodeError as error:
             self._last_error = error
             return False

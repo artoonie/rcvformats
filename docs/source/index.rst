@@ -9,6 +9,7 @@ Modules
 
    converters
    schemas
+   common
 
 Indices and tables
 ==================

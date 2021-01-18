@@ -2,24 +2,32 @@
 Tests that our example JSONs all pass validation
 """
 
+import os
+
+from rcvformats.schemas import electionbuddy
 from rcvformats.schemas import universaltabulator
 from rcvformats.schemas import opavote
 
 
+def _validate_files_in_dir_with(directory, schema):
+    for filename in os.listdir(directory):
+        if not schema.validate_file(os.path.join(directory, filename)):
+            raise schema.last_error()
+
+
 def test_universal_tabulator_formats_valid():
     """ Verifies that the example formats are valid """
-    filenames = [
-        'testdata/universal-tabulator-formats/macomb-multiwinner.json',
-        'testdata/universal-tabulator-formats/one-round.json',
-        'testdata/universal-tabulator-formats/simple.json'
-    ]
     schema = universaltabulator.SchemaV0()
-    for filename in filenames:
-        assert schema.validate_file(filename)
+    _validate_files_in_dir_with('testdata/universal-tabulator-formats', schema)
 
 
 def test_opavote_formats_valid():
     """ Verifies that the example formats are valid """
-    filename = 'testdata/opavote-formats/fairvote.json'
     schema = opavote.SchemaV1_0()
-    assert schema.validate_file(filename)
+    _validate_files_in_dir_with('testdata/opavote-formats', schema)
+
+
+def test_electionbuddy_formats_valid():
+    """ Verifies that the example formats are valid """
+    schema = electionbuddy.SchemaV0()
+    _validate_files_in_dir_with('testdata/electionbuddy-formats', schema)
