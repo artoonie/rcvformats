@@ -1,0 +1,60 @@
+{
+  "config": {
+    "contest": "\ufeffTest basic transfer, with zero-transfer regression test",
+    "threshold": "3.0",
+	 	"date": "2021-01-16"
+  },
+  "results": [
+    {
+      "round": 1,
+      "tally": {
+        "Chocolate": 1.0,
+        "Vanilla": 2.0,
+        "Strawberry": 3.0,
+        "Nobody": 0.0
+      },
+      "tallyResults": [
+        {
+          "eliminated": "Nobody",
+          "transfers": {
+          }
+        },
+        {
+          "elected": "Strawberry",
+          "transfers": {
+          }
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "tally": {
+        "Chocolate": 1.0,
+        "Vanilla": 2.0,
+        "Strawberry": 3.0
+      },
+      "tallyResults": [
+        {
+          "eliminated": "Chocolate",
+          "transfers": {
+            "Vanilla": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "tally": {
+        "Vanilla": 3.0,
+        "Strawberry": 3.0
+      },
+      "tallyResults": [
+        {
+          "elected": "Vanilla",
+          "transfers": {}
+        }
+      ]
+    }
+  ]
+}
+

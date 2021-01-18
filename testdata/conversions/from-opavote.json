@@ -1,0 +1,680 @@
+{
+  "config": {
+    "contest": "Rank Your Favorite Debate Performances! (Overall)",
+    "threshold": 604.0,
+    "date": "2021-01-17"
+  },
+  "results": [
+    {
+      "round": 1,
+      "tally": {
+        "Joe Biden": 9,
+        "Bernie Sanders": 417,
+        "Kamala Harris": 199,
+        "Pete Buttigieg": 82,
+        "Juli\u00e1n Castro": 18,
+        "Tim Ryan": 1,
+        "John Delaney": 8,
+        "Cory Booker": 11,
+        "Beto O\u2019Rourke": 1,
+        "Bill de Blasio": 4,
+        "Jay Inslee": 8,
+        "Amy Klobuchar": 15,
+        "Tulsi Gabbard": 86,
+        "Elizabeth Warren": 242,
+        "Kirsten Gillibrand": 5,
+        "Michael Bennet": 4,
+        "John Hickenlooper": 7,
+        "Eric Swalwell": 0,
+        "Marianne Williamson": 9,
+        "Andrew Yang": 198
+      },
+      "tallyResults": [
+        {
+          "eliminated": "Eric Swalwell",
+          "transfers": {}
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "tally": {
+        "Joe Biden": 9,
+        "Bernie Sanders": 417,
+        "Kamala Harris": 199,
+        "Pete Buttigieg": 82,
+        "Juli\u00e1n Castro": 18,
+        "Tim Ryan": 1,
+        "John Delaney": 8,
+        "Cory Booker": 11,
+        "Beto O\u2019Rourke": 1,
+        "Bill de Blasio": 4,
+        "Jay Inslee": 8,
+        "Amy Klobuchar": 15,
+        "Tulsi Gabbard": 86,
+        "Elizabeth Warren": 242,
+        "Kirsten Gillibrand": 5,
+        "Michael Bennet": 4,
+        "John Hickenlooper": 7,
+        "Eric Swalwell": 0,
+        "Marianne Williamson": 9,
+        "Andrew Yang": 198
+      },
+      "tallyResults": [
+        {
+          "eliminated": "Beto O\u2019Rourke",
+          "transfers": {
+            "Elizabeth Warren": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "tally": {
+        "Joe Biden": 9,
+        "Bernie Sanders": 417,
+        "Kamala Harris": 199,
+        "Pete Buttigieg": 82,
+        "Juli\u00e1n Castro": 18,
+        "Tim Ryan": 1,
+        "John Delaney": 8,
+        "Cory Booker": 11,
+        "Beto O\u2019Rourke": 0,
+        "Bill de Blasio": 4,
+        "Jay Inslee": 8,
+        "Amy Klobuchar": 15,
+        "Tulsi Gabbard": 86,
+        "Elizabeth Warren": 243,
+        "Kirsten Gillibrand": 5,
+        "Michael Bennet": 4,
+        "John Hickenlooper": 7,
+        "Eric Swalwell": 0,
+        "Marianne Williamson": 9,
+        "Andrew Yang": 198
+      },
+      "tallyResults": [
+        {
+          "eliminated": "Tim Ryan",
+          "transfers": {
+            "Bernie Sanders": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "tally": {
+        "Joe Biden": 9,
+        "Bernie Sanders": 418,
+        "Kamala Harris": 199,
+        "Pete Buttigieg": 82,
+        "Juli\u00e1n Castro": 18,
+        "Tim Ryan": 0,
+        "John Delaney": 8,
+        "Cory Booker": 11,
+        "Beto O\u2019Rourke": 0,
+        "Bill de Blasio": 4,
+        "Jay Inslee": 8,
+        "Amy Klobuchar": 15,
+        "Tulsi Gabbard": 86,
+        "Elizabeth Warren": 243,
+        "Kirsten Gillibrand": 5,
+        "Michael Bennet": 4,
+        "John Hickenlooper": 7,
+        "Eric Swalwell": 0,
+        "Marianne Williamson": 9,
+        "Andrew Yang": 198
+      },
+      "tallyResults": [
+        {
+          "eliminated": "Michael Bennet",
+          "transfers": {
+            "Pete Buttigieg": 3.0,
+            "Bill de Blasio": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "round": 5,
+      "tally": {
+        "Joe Biden": 9,
+        "Bernie Sanders": 418,
+        "Kamala Harris": 199,
+        "Pete Buttigieg": 85,
+        "Juli\u00e1n Castro": 18,
+        "Tim Ryan": 0,
+        "John Delaney": 8,
+        "Cory Booker": 11,
+        "Beto O\u2019Rourke": 0,
+        "Bill de Blasio": 5,
+        "Jay Inslee": 8,
+        "Amy Klobuchar": 15,
+        "Tulsi Gabbard": 86,
+        "Elizabeth Warren": 243,
+        "Kirsten Gillibrand": 5,
+        "Michael Bennet": 0,
+        "John Hickenlooper": 7,
+        "Eric Swalwell": 0,
+        "Marianne Williamson": 9,
+        "Andrew Yang": 198
+      },
+      "tallyResults": [
+        {
+          "eliminated": "Bill de Blasio",
+          "transfers": {
+            "Amy Klobuchar": 3.0,
+            "Elizabeth Warren": 1.0,
+            "Marianne Williamson": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "round": 6,
+      "tally": {
+        "Joe Biden": 9,
+        "Bernie Sanders": 418,
+        "Kamala Harris": 199,
+        "Pete Buttigieg": 85,
+        "Juli\u00e1n Castro": 18,
+        "Tim Ryan": 0,
+        "John Delaney": 8,
+        "Cory Booker": 11,
+        "Beto O\u2019Rourke": 0,
+        "Bill de Blasio": 0,
+        "Jay Inslee": 8,
+        "Amy Klobuchar": 18,
+        "Tulsi Gabbard": 86,
+        "Elizabeth Warren": 244,
+        "Kirsten Gillibrand": 5,
+        "Michael Bennet": 0,
+        "John Hickenlooper": 7,
+        "Eric Swalwell": 0,
+        "Marianne Williamson": 10,
+        "Andrew Yang": 198
+      },
+      "tallyResults": [
+        {
+          "eliminated": "Kirsten Gillibrand",
+          "transfers": {
+            "Kamala Harris": 1.0,
+            "Pete Buttigieg": 4.0
+          }
+        }
+      ]
+    },
+    {
+      "round": 7,
+      "tally": {
+        "Joe Biden": 9,
+        "Bernie Sanders": 418,
+        "Kamala Harris": 200,
+        "Pete Buttigieg": 89,
+        "Juli\u00e1n Castro": 18,
+        "Tim Ryan": 0,
+        "John Delaney": 8,
+        "Cory Booker": 11,
+        "Beto O\u2019Rourke": 0,
+        "Bill de Blasio": 0,
+        "Jay Inslee": 8,
+        "Amy Klobuchar": 18,
+        "Tulsi Gabbard": 86,
+        "Elizabeth Warren": 244,
+        "Kirsten Gillibrand": 0,
+        "Michael Bennet": 0,
+        "John Hickenlooper": 7,
+        "Eric Swalwell": 0,
+        "Marianne Williamson": 10,
+        "Andrew Yang": 198
+      },
+      "tallyResults": [
+        {
+          "eliminated": "John Hickenlooper",
+          "transfers": {
+            "Joe Biden": 1.0,
+            "John Delaney": 2.0,
+            "Jay Inslee": 2.0,
+            "Amy Klobuchar": 1.0,
+            "Tulsi Gabbard": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "round": 8,
+      "tally": {
+        "Joe Biden": 10,
+        "Bernie Sanders": 418,
+        "Kamala Harris": 200,
+        "Pete Buttigieg": 89,
+        "Juli\u00e1n Castro": 18,
+        "Tim Ryan": 0,
+        "John Delaney": 10,
+        "Cory Booker": 11,
+        "Beto O\u2019Rourke": 0,
+        "Bill de Blasio": 0,
+        "Jay Inslee": 10,
+        "Amy Klobuchar": 19,
+        "Tulsi Gabbard": 87,
+        "Elizabeth Warren": 244,
+        "Kirsten Gillibrand": 0,
+        "Michael Bennet": 0,
+        "John Hickenlooper": 0,
+        "Eric Swalwell": 0,
+        "Marianne Williamson": 10,
+        "Andrew Yang": 198
+      },
+      "tallyResults": [
+        {
+          "eliminated": "John Delaney",
+          "transfers": {
+            "Joe Biden": 2.0,
+            "Kamala Harris": 1.0,
+            "Pete Buttigieg": 3.0,
+            "Amy Klobuchar": 3.0,
+            "Elizabeth Warren": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "round": 9,
+      "tally": {
+        "Joe Biden": 12,
+        "Bernie Sanders": 418,
+        "Kamala Harris": 201,
+        "Pete Buttigieg": 92,
+        "Juli\u00e1n Castro": 18,
+        "Tim Ryan": 0,
+        "John Delaney": 0,
+        "Cory Booker": 11,
+        "Beto O\u2019Rourke": 0,
+        "Bill de Blasio": 0,
+        "Jay Inslee": 10,
+        "Amy Klobuchar": 22,
+        "Tulsi Gabbard": 87,
+        "Elizabeth Warren": 245,
+        "Kirsten Gillibrand": 0,
+        "Michael Bennet": 0,
+        "John Hickenlooper": 0,
+        "Eric Swalwell": 0,
+        "Marianne Williamson": 10,
+        "Andrew Yang": 198
+      },
+      "tallyResults": [
+        {
+          "eliminated": "Jay Inslee",
+          "transfers": {
+            "Pete Buttigieg": 2.0,
+            "Juli\u00e1n Castro": 1.0,
+            "Tulsi Gabbard": 2.0,
+            "Elizabeth Warren": 5.0
+          }
+        }
+      ]
+    },
+    {
+      "round": 10,
+      "tally": {
+        "Joe Biden": 12,
+        "Bernie Sanders": 418,
+        "Kamala Harris": 201,
+        "Pete Buttigieg": 94,
+        "Juli\u00e1n Castro": 19,
+        "Tim Ryan": 0,
+        "John Delaney": 0,
+        "Cory Booker": 11,
+        "Beto O\u2019Rourke": 0,
+        "Bill de Blasio": 0,
+        "Jay Inslee": 0,
+        "Amy Klobuchar": 22,
+        "Tulsi Gabbard": 89,
+        "Elizabeth Warren": 250,
+        "Kirsten Gillibrand": 0,
+        "Michael Bennet": 0,
+        "John Hickenlooper": 0,
+        "Eric Swalwell": 0,
+        "Marianne Williamson": 10,
+        "Andrew Yang": 198
+      },
+      "tallyResults": [
+        {
+          "eliminated": "Marianne Williamson",
+          "transfers": {
+            "Bernie Sanders": 2.0,
+            "Kamala Harris": 3.0,
+            "Pete Buttigieg": 1.0,
+            "Tulsi Gabbard": 2.0,
+            "Elizabeth Warren": 2.0
+          }
+        }
+      ]
+    },
+    {
+      "round": 11,
+      "tally": {
+        "Joe Biden": 12,
+        "Bernie Sanders": 420,
+        "Kamala Harris": 204,
+        "Pete Buttigieg": 95,
+        "Juli\u00e1n Castro": 19,
+        "Tim Ryan": 0,
+        "John Delaney": 0,
+        "Cory Booker": 11,
+        "Beto O\u2019Rourke": 0,
+        "Bill de Blasio": 0,
+        "Jay Inslee": 0,
+        "Amy Klobuchar": 22,
+        "Tulsi Gabbard": 91,
+        "Elizabeth Warren": 252,
+        "Kirsten Gillibrand": 0,
+        "Michael Bennet": 0,
+        "John Hickenlooper": 0,
+        "Eric Swalwell": 0,
+        "Marianne Williamson": 0,
+        "Andrew Yang": 198
+      },
+      "tallyResults": [
+        {
+          "eliminated": "Cory Booker",
+          "transfers": {
+            "Kamala Harris": 6.0,
+            "Pete Buttigieg": 1.0,
+            "Amy Klobuchar": 2.0,
+            "Tulsi Gabbard": 1.0,
+            "Elizabeth Warren": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "round": 12,
+      "tally": {
+        "Joe Biden": 12,
+        "Bernie Sanders": 420,
+        "Kamala Harris": 210,
+        "Pete Buttigieg": 96,
+        "Juli\u00e1n Castro": 19,
+        "Tim Ryan": 0,
+        "John Delaney": 0,
+        "Cory Booker": 0,
+        "Beto O\u2019Rourke": 0,
+        "Bill de Blasio": 0,
+        "Jay Inslee": 0,
+        "Amy Klobuchar": 24,
+        "Tulsi Gabbard": 92,
+        "Elizabeth Warren": 253,
+        "Kirsten Gillibrand": 0,
+        "Michael Bennet": 0,
+        "John Hickenlooper": 0,
+        "Eric Swalwell": 0,
+        "Marianne Williamson": 0,
+        "Andrew Yang": 198
+      },
+      "tallyResults": [
+        {
+          "eliminated": "Joe Biden",
+          "transfers": {
+            "Kamala Harris": 1.0,
+            "Pete Buttigieg": 1.0,
+            "Juli\u00e1n Castro": 1.0,
+            "Amy Klobuchar": 2.0,
+            "Tulsi Gabbard": 1.0,
+            "Elizabeth Warren": 6.0
+          }
+        }
+      ]
+    },
+    {
+      "round": 13,
+      "tally": {
+        "Joe Biden": 0,
+        "Bernie Sanders": 420,
+        "Kamala Harris": 211,
+        "Pete Buttigieg": 97,
+        "Juli\u00e1n Castro": 20,
+        "Tim Ryan": 0,
+        "John Delaney": 0,
+        "Cory Booker": 0,
+        "Beto O\u2019Rourke": 0,
+        "Bill de Blasio": 0,
+        "Jay Inslee": 0,
+        "Amy Klobuchar": 26,
+        "Tulsi Gabbard": 93,
+        "Elizabeth Warren": 259,
+        "Kirsten Gillibrand": 0,
+        "Michael Bennet": 0,
+        "John Hickenlooper": 0,
+        "Eric Swalwell": 0,
+        "Marianne Williamson": 0,
+        "Andrew Yang": 198
+      },
+      "tallyResults": [
+        {
+          "eliminated": "Juli\u00e1n Castro",
+          "transfers": {
+            "Kamala Harris": 8.0,
+            "Pete Buttigieg": 4.0,
+            "Amy Klobuchar": 2.0,
+            "Tulsi Gabbard": 3.0,
+            "Elizabeth Warren": 2.0,
+            "Andrew Yang": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "round": 14,
+      "tally": {
+        "Joe Biden": 0,
+        "Bernie Sanders": 420,
+        "Kamala Harris": 219,
+        "Pete Buttigieg": 101,
+        "Juli\u00e1n Castro": 0,
+        "Tim Ryan": 0,
+        "John Delaney": 0,
+        "Cory Booker": 0,
+        "Beto O\u2019Rourke": 0,
+        "Bill de Blasio": 0,
+        "Jay Inslee": 0,
+        "Amy Klobuchar": 28,
+        "Tulsi Gabbard": 96,
+        "Elizabeth Warren": 261,
+        "Kirsten Gillibrand": 0,
+        "Michael Bennet": 0,
+        "John Hickenlooper": 0,
+        "Eric Swalwell": 0,
+        "Marianne Williamson": 0,
+        "Andrew Yang": 199
+      },
+      "tallyResults": [
+        {
+          "eliminated": "Amy Klobuchar",
+          "transfers": {
+            "Bernie Sanders": 2.0,
+            "Kamala Harris": 6.0,
+            "Pete Buttigieg": 8.0,
+            "Tulsi Gabbard": 2.0,
+            "Elizabeth Warren": 4.0,
+            "Andrew Yang": 2.0
+          }
+        }
+      ]
+    },
+    {
+      "round": 15,
+      "tally": {
+        "Joe Biden": 0,
+        "Bernie Sanders": 422,
+        "Kamala Harris": 225,
+        "Pete Buttigieg": 109,
+        "Juli\u00e1n Castro": 0,
+        "Tim Ryan": 0,
+        "John Delaney": 0,
+        "Cory Booker": 0,
+        "Beto O\u2019Rourke": 0,
+        "Bill de Blasio": 0,
+        "Jay Inslee": 0,
+        "Amy Klobuchar": 0,
+        "Tulsi Gabbard": 98,
+        "Elizabeth Warren": 265,
+        "Kirsten Gillibrand": 0,
+        "Michael Bennet": 0,
+        "John Hickenlooper": 0,
+        "Eric Swalwell": 0,
+        "Marianne Williamson": 0,
+        "Andrew Yang": 201
+      },
+      "tallyResults": [
+        {
+          "eliminated": "Tulsi Gabbard",
+          "transfers": {
+            "Bernie Sanders": 43.0,
+            "Kamala Harris": 3.0,
+            "Pete Buttigieg": 11.0,
+            "Elizabeth Warren": 8.0,
+            "Andrew Yang": 23.0
+          }
+        }
+      ]
+    },
+    {
+      "round": 16,
+      "tally": {
+        "Joe Biden": 0,
+        "Bernie Sanders": 465,
+        "Kamala Harris": 228,
+        "Pete Buttigieg": 120,
+        "Juli\u00e1n Castro": 0,
+        "Tim Ryan": 0,
+        "John Delaney": 0,
+        "Cory Booker": 0,
+        "Beto O\u2019Rourke": 0,
+        "Bill de Blasio": 0,
+        "Jay Inslee": 0,
+        "Amy Klobuchar": 0,
+        "Tulsi Gabbard": 0,
+        "Elizabeth Warren": 273,
+        "Kirsten Gillibrand": 0,
+        "Michael Bennet": 0,
+        "John Hickenlooper": 0,
+        "Eric Swalwell": 0,
+        "Marianne Williamson": 0,
+        "Andrew Yang": 224
+      },
+      "tallyResults": [
+        {
+          "eliminated": "Pete Buttigieg",
+          "transfers": {
+            "Bernie Sanders": 8.0,
+            "Kamala Harris": 57.0,
+            "Elizabeth Warren": 34.0,
+            "Andrew Yang": 10.0
+          }
+        }
+      ]
+    },
+    {
+      "round": 17,
+      "tally": {
+        "Joe Biden": 0,
+        "Bernie Sanders": 473,
+        "Kamala Harris": 285,
+        "Pete Buttigieg": 0,
+        "Juli\u00e1n Castro": 0,
+        "Tim Ryan": 0,
+        "John Delaney": 0,
+        "Cory Booker": 0,
+        "Beto O\u2019Rourke": 0,
+        "Bill de Blasio": 0,
+        "Jay Inslee": 0,
+        "Amy Klobuchar": 0,
+        "Tulsi Gabbard": 0,
+        "Elizabeth Warren": 307,
+        "Kirsten Gillibrand": 0,
+        "Michael Bennet": 0,
+        "John Hickenlooper": 0,
+        "Eric Swalwell": 0,
+        "Marianne Williamson": 0,
+        "Andrew Yang": 234
+      },
+      "tallyResults": [
+        {
+          "eliminated": "Andrew Yang",
+          "transfers": {
+            "Bernie Sanders": 60.0,
+            "Kamala Harris": 52.0,
+            "Elizabeth Warren": 58.0
+          }
+        }
+      ]
+    },
+    {
+      "round": 18,
+      "tally": {
+        "Joe Biden": 0,
+        "Bernie Sanders": 533,
+        "Kamala Harris": 337,
+        "Pete Buttigieg": 0,
+        "Juli\u00e1n Castro": 0,
+        "Tim Ryan": 0,
+        "John Delaney": 0,
+        "Cory Booker": 0,
+        "Beto O\u2019Rourke": 0,
+        "Bill de Blasio": 0,
+        "Jay Inslee": 0,
+        "Amy Klobuchar": 0,
+        "Tulsi Gabbard": 0,
+        "Elizabeth Warren": 365,
+        "Kirsten Gillibrand": 0,
+        "Michael Bennet": 0,
+        "John Hickenlooper": 0,
+        "Eric Swalwell": 0,
+        "Marianne Williamson": 0,
+        "Andrew Yang": 0
+      },
+      "tallyResults": [
+        {
+          "eliminated": "Kamala Harris",
+          "transfers": {
+            "Bernie Sanders": 44.0,
+            "Elizabeth Warren": 266.0
+          }
+        }
+      ]
+    },
+    {
+      "round": 19,
+      "tally": {
+        "Joe Biden": 0,
+        "Bernie Sanders": 577,
+        "Kamala Harris": 0,
+        "Pete Buttigieg": 0,
+        "Juli\u00e1n Castro": 0,
+        "Tim Ryan": 0,
+        "John Delaney": 0,
+        "Cory Booker": 0,
+        "Beto O\u2019Rourke": 0,
+        "Bill de Blasio": 0,
+        "Jay Inslee": 0,
+        "Amy Klobuchar": 0,
+        "Tulsi Gabbard": 0,
+        "Elizabeth Warren": 631,
+        "Kirsten Gillibrand": 0,
+        "Michael Bennet": 0,
+        "John Hickenlooper": 0,
+        "Eric Swalwell": 0,
+        "Marianne Williamson": 0,
+        "Andrew Yang": 0
+      },
+      "tallyResults": [
+        {
+          "elected": "Elizabeth Warren",
+          "transfers": {}
+        }
+      ]
+    }
+  ]
+}

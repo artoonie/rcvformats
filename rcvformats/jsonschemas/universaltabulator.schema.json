@@ -111,8 +111,15 @@
   ],
   "$defs": {
     "decimal-as-string": {
-      "type": "string",
-      "pattern": "^\\d*[.]{0,1}\\d*$"
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^\\d*[.]{0,1}\\d*$"
+        },
+        {
+          "type": "number"
+        }
+      ]
     }
   }
 }
