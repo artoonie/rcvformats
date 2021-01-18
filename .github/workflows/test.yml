@@ -40,7 +40,7 @@ jobs:
       run: |
         ./scripts/lint.sh
   tag-and-release:
-    if: github.ref == 'refs/tags/main'
+    if: github.ref == 'refs/heads/main'
     needs:
     - test
     - lint
