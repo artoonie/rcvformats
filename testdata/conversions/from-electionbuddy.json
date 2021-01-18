@@ -1,8 +1,7 @@
 {
   "config": {
     "contest": "\ufeffTest basic transfer, with zero-transfer regression test",
-    "threshold": "3.0",
-	 	"date": "2021-01-16"
+    "threshold": "3.0"
   },
   "results": [
     {

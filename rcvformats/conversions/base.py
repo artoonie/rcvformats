@@ -1,6 +1,4 @@
 import abc
-import os
-import time
 
 
 from rcvformats.schemas import universaltabulator
@@ -19,15 +17,6 @@ class Converter(abc.ABC):
         """ Initializes common data """
         self.schema = universaltabulator.SchemaV0()
         self.has_been_parsed = False
-
-    def guess_at_date(self, filename):
-        """
-        If the file format has no date, guess it by the file mtime
-        :param filename: The filename to inspect
-        :return: A string representing the Y-m-d
-        """
-        date_file_created = time.gmtime(os.path.getmtime(filename))
-        return time.strftime('%Y-%m-%d', date_file_created)
 
     def to_universal_tabulator_format(self):
         """

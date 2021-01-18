@@ -33,8 +33,7 @@
         }
       },
       "required": [
-        "contest",
-        "date"
+        "contest"
       ]
     },
     "results": {

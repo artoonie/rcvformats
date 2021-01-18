@@ -51,8 +51,7 @@ class OpavoteConverter(GenericGuessAtTransferConverter):
         threshold = sum(data['rounds'][-1]['count']) / (data['n_seats'] + 1)
         ut_config = {
             'contest': data['title'],
-            'threshold': threshold,
-            'date': self.guess_at_date(filename)
+            'threshold': threshold
         }
 
         # Fill out rounds['tally']

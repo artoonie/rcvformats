@@ -104,8 +104,7 @@ class ElectionBuddyConverter(GenericGuessAtTransferConverter):
         # Create configuration, assuming date of election is the file creation date
         ut_config = {
             'contest': raw_data.title.strip(),
-            'threshold': str(self._get_threshold(raw_data)),
-            'date': self.guess_at_date(filename)
+            'threshold': str(self._get_threshold(raw_data))
         }
 
         # Loop over each round, first filling in just the tally
