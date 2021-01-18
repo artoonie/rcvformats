@@ -21,6 +21,7 @@ class Converter(abc.ABC):
     def to_universal_tabulator_format(self):
         """
         Returns a dictionary which you can serialize to the Universal RCV Tabulator format.
+
         :raises CouldNotConvertException: If the conversion could not complete
         """
         if not self.has_been_parsed:
@@ -44,8 +45,9 @@ class Converter(abc.ABC):
     @abc.abstractmethod
     def _parse(self, filename):
         """
-        Internal method called by parse(.):
+        Internal method called by :func:`~parse`
         Parses the file object and stores it internally for querying
+
         :param filename: The filename to parse
         """
 
@@ -108,9 +110,10 @@ class GenericGuessAtTransferConverter(Converter):
         """
         Returns the vote deltas between this round and next round. The two tally arguments
         must match the tally format in the Universal Tabulator format.
+
         :param tally_this_round: A dict mapping candidate names to number of votes this round
-        :param tally_next_round: A dict mapping candidate names to number of votes next round,
-                                 ensuring that any eliminated candidates are NOT present next
+        :param tally_next_round: A dict mapping candidate names to number of votes next round,\
+                                 ensuring that any eliminated candidates are NOT present next\
                                  round, NOT that they just have zero votes.
         :return: A dict mapping candidate names in this round to how their votes changed
                  between this round and the next. Includes positive numbers (gained votes) and
@@ -133,11 +136,13 @@ class GenericGuessAtTransferConverter(Converter):
 
     def compute_vote_deltas_for_round(self, ut_rounds_tally_only, round_i):
         """
-        Wrapper around
-        :param ut_rounds_tally_only: Incomplete Universal Tabulator 'results' structure,
-            containing only 'tally' but not 'tallyResults'. The tallies must be numbers,
-            not strings.
-        :return: Value from _compute_vote_deltas_from_tally
+        Gathers some data and passes it on to :func:`~_compute_vote_deltas_from_tally`
+
+        :param ut_rounds_tally_only: Incomplete Universal Tabulator 'results' structure, \
+                                     containing only 'tally' but not 'tallyResults'. \
+                                     The tallies must be numbers, not strings.
+        :param round_i: Computes delta between this round and the next
+        :return: Value from :func:`~_compute_vote_deltas_from_tally`
         """
         if round_i == len(ut_rounds_tally_only) - 1:
             # Last round - no deltas
@@ -149,14 +154,14 @@ class GenericGuessAtTransferConverter(Converter):
     def guess_at_tally_results(self, eliminated_names, elected_names, vote_delta):
         """
         Computes the tallyResult, the difference between this round and the next
+        See the description of @_compute_tally_results to understand why, in the case of
+        multiple winners, the best we can do is guess at the transfers here.
+
         :param eliminated_names: the names of each eliminated candidate
         :param elected_names: the names of each elected candidate
-        :param vote_delta: a dict mapping candidate name to vote difference
+        :param vote_delta: a dict mapping candidate name to vote difference \
                            between this round and the next round.
         :return: The contents of the tallyResults dict
-
-        See the description of @_compute_tally_results to understand why, in the case of
-        multiple winners, the best we can do is guess at the tranfsers here.
         """
         weights = self._weights_for_each_transfer(eliminated_names, elected_names, vote_delta)
 

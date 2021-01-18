@@ -18,7 +18,8 @@ class Schema(abc.ABC):
     @abc.abstractmethod
     def version(self):
         """
-        Which version number
+        The version number of this schema
+
         :return: A string represting the version number
         """
 
@@ -26,6 +27,7 @@ class Schema(abc.ABC):
     def validate_file(self, filename):
         """
         Opens the file and validates that it matches the expected schema
+
         :param filename: The JSON filename for the tabulated results
         :return: whether or not the validation failed
         """
@@ -34,6 +36,7 @@ class Schema(abc.ABC):
     def validate_data(self, data):
         """
         Reads the data and validates that it matches the expected schema
+
         :param filename: The JSON filename for the tabulated results
         :return: whether or not the validation failed
         """
@@ -42,6 +45,7 @@ class Schema(abc.ABC):
         """
         If validate() failed, this method will provide more detailed information
         on the error. The details vary by class type.
+
         :return: Additional information on why the validation failed
         """
         return self._last_error
@@ -62,6 +66,7 @@ class GenericJsonSchema(Schema):
         super().__init__()
 
     def validate_file(self, filename):
+        """ Opens the file and runs :func:`~validate_data` """
         try:
             with open(filename, 'r') as file_object:
                 data = json.load(file_object)
@@ -72,6 +77,13 @@ class GenericJsonSchema(Schema):
         return self.validate_data(data)
 
     def validate_data(self, data):
+        """
+        Validates that the data matches the schema. If invalid, more data may be available
+        by calling last_error()
+
+        :param data: The input dictionary
+        :return: Whether or not the data matches the schema
+        """
         try:
             jsonschema.validate(data, self.schema)
             return True

@@ -53,3 +53,6 @@ from rcvformats.conversions.opavote import OpavoteConverter
 2. Implement schema validation and migration for the ElectionBuddy CSV
 3. More unit tests
 4. Create both structure and data validations for the Universal Tabulator format
+
+## Running test suite
+Just run `nosetests` in the root directory

@@ -1,2 +1,4 @@
 rcvformats.egg-info/
 __pycache__
+*.pyc
+docs/build/
