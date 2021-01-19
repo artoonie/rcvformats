@@ -3,6 +3,7 @@ A collection of shared helper utilities
 """
 
 import io
+import os
 
 
 def is_file_obj(filename_or_fileobj):
@@ -15,5 +16,5 @@ def is_file_obj(filename_or_fileobj):
 
 
 def is_filename(filename_or_fileobj):
-    """ Is the given argument a File object? """
-    return isinstance(filename_or_fileobj, str)
+    """ Is the given argument a filename? """
+    return os.path.isfile(filename_or_fileobj)
