@@ -23,6 +23,7 @@ setup(
     author="Armin Samii",
     author_email="armin.samii@gmail.com",
     packages=find_packages(),
+    package_data={'rcvformats': ['jsonschemas']},
     include_package_data=True,
     python_requires='>=3',
 )
