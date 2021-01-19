@@ -39,6 +39,37 @@ jobs:
     - name: Lint with pylint
       run: |
         ./scripts/lint.sh
+  build-wheel:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install twine wheel
+    - name: Lint with pylint
+      run: |
+        ./scripts/validate_wheel.sh
+  make-docs:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install sphinx m2r recommonmark
+        pip install -r requirements.txt
+    - name: Lint with pylint
+      run: |
+        cd docs && make html
   tag-and-release:
     if: github.ref == 'refs/heads/main'
     needs:
