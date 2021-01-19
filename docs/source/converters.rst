@@ -25,6 +25,16 @@ Some of the possible exceptions that may be thrown during conversion
    :show-inheritance:
    :noindex:
 
+Automatic Converter
+-----------------------
+
+Allows you to provide any file and it will try to figure out its type and convert it.
+
+.. automodule:: conversions.automatic
+   :members:
+   :private-members:
+   :show-inheritance:
+
 Internal developer documentation
 --------------------------------
 The remainder of this documentation is about the internal representation of classes.
