@@ -18,6 +18,7 @@ setup(
     description='Schema validations, migrations, and conversions to '\
                 'standardize the Ranked Choice Voting ecosystem',
     long_description=readme(),
+    long_description_content_type="text/markdown",
     url='https://github.com/artoonie/rcvformats',
     author="Armin Samii",
     author_email="armin.samii@gmail.com",
