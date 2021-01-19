@@ -2,18 +2,24 @@
 [![Documentation Status](https://readthedocs.org/projects/rcvformats/badge/?version=latest)](https://rcvformats.readthedocs.io/en/latest/?badge=latest)
 
 # RCV Formats
-Tap into the Ranked Choice Voting Ecosystem by loading a single file format. RCV Formats converts data formats from several sources into a single, standardized format with just one line of code:
+Build tools for the Ranked Choice Voting Ecosystem without having to support each file format individually. RCV Formats converts data from several sources into a single, standardized format with just one line of code:
 ```python
 from rcvformats.converters.automatic import AutomaticConverter
 
 standardized_format = AutomaticConverter().convert_to_ut(arbitrary_format)
 ```
 
-The standard format is the [Universal RCV Tabulator JSON](https://www.rankedchoicevoting.org/universal_rcv_tabulator).
+The standardized format is the [Universal RCV Tabulator JSON](https://www.rankedchoicevoting.org/universal_rcv_tabulator). To understand this format, look at [examples](https://github.com/artoonie/rcvformats/tree/main/testdata/inputs/universal-tabulator) or [the jsonschema](https://github.com/artoonie/rcvformats/blob/main/rcvformats/jsonschemas/universaltabulator.schema.json).
 
-RCV Formats has both validators and converters.
 
-## Validators
+## Installation
+`pip3 install rcvformats`
+
+
+## Additional Options
+RCV Formats can also run schema validations and conversions from specific formats.
+
+### Schema Validation
 Validate that your file format matches one of several available schemas:
 
 1. The Universal RCV Tabulator JSON format
@@ -40,7 +46,7 @@ from rcvformats.schemas.opavote import SchemaV1_0
 from rcvformats.schemas.universaltabulator import SchemaV0
 ```
 
-## Conversion
+### File Format Conversion
 You can convert from any of the supported formats and to the Universal RCV Tabulator format. The currently supported formats are:
 1. ElectionBuddy CSVs
 2. Opavote JSONs
