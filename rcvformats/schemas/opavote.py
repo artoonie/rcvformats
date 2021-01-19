@@ -11,7 +11,7 @@ class SchemaV1_0(GenericJsonSchema):
 
     @property
     def schema_filename(self):
-        return 'rcvformats/jsonschemas/opavote.schema.json'
+        return 'opavote.schema.json'
 
     def version(self):
         return "1.0"

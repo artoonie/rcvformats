@@ -10,7 +10,7 @@ class SchemaV0(GenericJsonSchema):
 
     @property
     def schema_filename(self):
-        return 'rcvformats/jsonschemas/universaltabulator.schema.json'
+        return 'universaltabulator.schema.json'
 
     def version(self):
         return "Unversioned:V0"
