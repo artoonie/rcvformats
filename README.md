@@ -2,14 +2,25 @@
 [![Documentation Status](https://readthedocs.org/projects/rcvformats/badge/?version=latest)](https://rcvformats.readthedocs.io/en/latest/?badge=latest)
 
 # RCV Formats
-A collection of parsers and converters from various RCV formats to the standard [Universal RCV Tabulator format](https://www.rankedchoicevoting.org/universal_rcv_tabulator).
+Tap into the Ranked Choice Voting Ecosystem by loading a single file format. RCV Formats converts data formats from several sources into a single, standardized format with just one line of code:
+```python
+from rcvformats.converters.automatic import AutomaticConverter
 
-## Validation
-The following schemas can be validated. Currently, validation does not guarantee they can be imported: the validators make no sanity checks to ensure the math works out, or that there are no typos in candidate names. Rather, they only validate the structure.
+standardized_format = AutomaticConverter().convert_to_ut(arbitrary_format)
+```
+
+The standard format is the [Universal RCV Tabulator JSON](https://www.rankedchoicevoting.org/universal_rcv_tabulator).
+
+RCV Formats has both validators and converters.
+
+## Validators
+Validate that your file format matches one of several available schemas:
 
 1. The Universal RCV Tabulator JSON format
 2. The Opavote JSON format
 3. The ElectionBuddy CSV format
+
+Currently, validation is only on the structure of the data, not on its contents: it is possible for a validly-formatted file to still contain invalid data.
 
 You can run the validation and examine errors via:
 ```python
@@ -32,7 +43,7 @@ from rcvformats.schemas.universaltabulator import SchemaV0
 ## Conversion
 You can convert from any of the supported formats and to the Universal RCV Tabulator format. The currently supported formats are:
 1. ElectionBuddy CSVs
-1. Opavote JSONs
+2. Opavote JSONs
 
 You can run the conversion via:
 
@@ -48,15 +59,18 @@ except Exception as e:
 
 Valid converters are:
 ```python
+from rcvformats.converters.automatic import AutomaticConverter
 from rcvformats.conversions.electionbuddy import ElectionBuddyConverter
 from rcvformats.conversions.opavote import OpavoteConverter
 ```
 
+The AutomaticConverter checks if the file matches any of the available schemas, and if it finds a matching schema, it runs the corresponding conversion (if a conversion is needed at all).
+
 ## Upcoming plans
 1. Allow any format to be converted both to and from the Universal Tabulator format
-2. Implement schema validation and migration for the ElectionBuddy CSV
-3. More unit tests
-4. Create both structure and data validations for the Universal Tabulator format
+2. More unit tests
+3. Create both structure and data validations for the Universal Tabulator format
+4. Validation for both tabulated formats and cast vote records
 
 ## Running test suite
-Just run `nosetests` in the root directory
+Run `nosetests` in the root directory
