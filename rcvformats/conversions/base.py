@@ -4,6 +4,7 @@ Interface and exceptions for all converters
 
 import abc
 
+from rcvformats.common import utils
 from rcvformats.schemas import universaltabulator
 
 
@@ -15,39 +16,56 @@ class CouldNotConvertException(Exception):
     """
 
 
+class CouldNotOpenFileException(Exception):
+    """
+    Raised if the file could not be opened
+    """
+
+
 class Converter(abc.ABC):
     """ Interface for converters """
 
     def __init__(self):
         """ Initializes common data """
-        self.schema = universaltabulator.SchemaV0()
+        self.ut_schema = universaltabulator.SchemaV0()
 
-    def convert_to_ut_and_validate(self, filename):
+    def convert_to_ut_and_validate(self, filename_or_fileobj):
         """
         Calls :func:`~convert_to_ut`, then validates it with the Universal Tabulator schema.
 
+        :param filename: A File object or filename
         :return: Guaranteed-valid Universal Tabulator data
         :raises CouldNotConvertException: If the conversion could not complete
         """
         try:
-            ut_format = self.convert_to_ut(filename)
-            if not self.schema.validate_data(ut_format):
-                raise CouldNotConvertException(self.schema.last_error())
+            ut_format = self.convert_to_ut(filename_or_fileobj)
+            if not self.ut_schema.validate_data(ut_format):
+                raise CouldNotConvertException(self.ut_schema.last_error())
         except Exception as unknown_error:
             raise CouldNotConvertException from unknown_error
 
         return ut_format
 
-    @classmethod
-    @abc.abstractmethod
-    def convert_to_ut(cls, filename):
+    def convert_to_ut(self, filename_or_fileobj):
         """
-        Parses the file object and returns the parsed data
+        Parses the file and returns the parsed data
 
-        :param filename: The filename to parse
+        :param filename: A File object or filename
         :return: The Universal Tabulator representation of this data.\
                  Call :func:`~convert_to_ut_and_validate` to guarantee that \
                  it matches the Universal Tabulator schema.
+        """
+        if utils.is_file_obj(filename_or_fileobj):
+            return self._convert_file_object_to_ut(filename_or_fileobj)
+        if utils.is_filename(filename_or_fileobj):
+            with open(filename_or_fileobj, 'r') as file_object:
+                return self._convert_file_object_to_ut(file_object)
+        raise CouldNotOpenFileException(f"Could not open {filename_or_fileobj}")
+
+    @abc.abstractmethod
+    def _convert_file_object_to_ut(self, file_object):
+        """
+        Just like func:`~convert_to_ut`, but only accepting a file object
         """
 
 

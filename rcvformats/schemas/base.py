@@ -6,6 +6,8 @@ import abc
 import json
 import jsonschema
 
+from rcvformats.common import utils
+
 
 class Schema(abc.ABC):
     """
@@ -23,20 +25,26 @@ class Schema(abc.ABC):
         :return: A string represting the version number
         """
 
-    def validate_file(self, filename):
+    def validate(self, filename_or_fileobj):
         """
-        Opens the file and validates that it matches the expected schema
+        Validates that the file matches the expected schema
 
-        :param filename: The JSON filename for the tabulated results
+        :param filename_or_fileobj: The JSON filename or file object for the tabulated results
         :return: whether or not the validation failed
         """
-        with open(filename, 'r') as file_obj:
-            return self.validate_file_object(file_obj)
+        if utils.is_file_obj(filename_or_fileobj):
+            return self._validate_file_object(filename_or_fileobj)
+        if utils.is_filename(filename_or_fileobj):
+            with open(filename_or_fileobj, 'r') as file_object:
+                return self._validate_file_object(file_object)
+        # Couldn't open the file at all
+        self._last_error = TypeError("Couldn't open file")
+        return False
 
     @abc.abstractmethod
-    def validate_file_object(self, file_object):
+    def _validate_file_object(self, file_object):
         """
-        Same as func:`~validate_file` but accepts a file object instead of a filename
+        Implements the bulk of func:`~validate`
         """
 
     def last_error(self):
@@ -65,7 +73,7 @@ class GenericJsonSchema(Schema):
 
         super().__init__()
 
-    def validate_file_object(self, file_object):
+    def _validate_file_object(self, file_object):
         """ Opens the file and runs :func:`~validate_data` """
         try:
             data = json.load(file_object)

@@ -14,9 +14,8 @@ class ElectionBuddyConverter(GenericGuessAtTransferConverter):
     but it also has miscellaneous title lines.
     """
 
-    def convert_to_ut(self, filename):
-        with open(filename, 'r') as file_object:
-            raw_data = ElectionBuddyData(file_object)
+    def _convert_file_object_to_ut(self, file_object):
+        raw_data = ElectionBuddyData(file_object)
 
         # Create configuration, assuming date of election is the file creation date
         config = {

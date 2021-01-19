@@ -47,10 +47,8 @@ class OpavoteConverter(GenericGuessAtTransferConverter):
         """ Number of votes the corresponding candidate had on round_i """
         return rounds[round_i]['count'][candidate_i]
 
-    @classmethod
-    def convert_to_ut(cls, filename):
-        with open(filename, 'r') as file_object:
-            data = json.load(file_object)
+    def _convert_file_object_to_ut(self, file_object):
+        data = json.load(file_object)
 
         threshold = sum(data['rounds'][-1]['count']) / (data['n_seats'] + 1)
         ut_config = {
@@ -68,12 +66,12 @@ class OpavoteConverter(GenericGuessAtTransferConverter):
                 'tally': {}
             }
             for candidate_i, _ in enumerate(candidate_names):
-                votes = cls._votes_on_round(candidate_i, rounds, round_i)
+                votes = self._votes_on_round(candidate_i, rounds, round_i)
                 name = candidate_names[candidate_i]
                 ut_round['tally'][name] = votes
             ut_rounds.append(ut_round)
 
-        cls._fill_in_tallyresults(rounds, candidate_names, ut_rounds)
+        self._fill_in_tallyresults(rounds, candidate_names, ut_rounds)
 
         return {'config': ut_config, 'results': ut_rounds}
 

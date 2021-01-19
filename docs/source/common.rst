@@ -20,3 +20,13 @@ Parser used for both schema validation and conversion
    :members:
    :private-members:
    :show-inheritance:
+
+Utilities
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Set of common utilities
+
+.. automodule:: common.utils
+   :members:
+   :private-members:
+   :show-inheritance:

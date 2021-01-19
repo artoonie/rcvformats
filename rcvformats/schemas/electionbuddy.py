@@ -14,7 +14,7 @@ class SchemaV0(Schema):
     def version(self):
         return 'unversioned:0'
 
-    def validate_file_object(self, file_object):
+    def _validate_file_object(self, file_object):
         try:
             ElectionBuddyData(file_object)
             return True
