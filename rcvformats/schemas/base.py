@@ -4,6 +4,8 @@ Loads supported schemas (currently only one: the Universal Tabulator schema)
 
 import abc
 import json
+import os
+
 import jsonschema
 
 from rcvformats.common import utils
@@ -68,10 +70,15 @@ class GenericJsonSchema(Schema):
 
     def __init__(self):
         filename = self.schema_filename
-        with open(filename, 'r') as file_object:
+        filepath = os.path.join(self._get_jsonschema_directory(), filename)
+        with open(filepath, 'r') as file_object:
             self.schema = json.load(file_object)
 
         super().__init__()
+
+    @classmethod
+    def _get_jsonschema_directory(cls):
+        return os.path.join(os.path.dirname(__file__), '..', 'jsonschemas')
 
     def _validate_file_object(self, file_object):
         """ Opens the file and runs :func:`~validate_data` """
