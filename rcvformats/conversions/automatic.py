@@ -6,8 +6,11 @@ loop through all schemas which will be needlessly slow.
 
 import json
 
-from rcvformats import conversions
-from rcvformats import schemas
+from rcvformats.conversions.base import CouldNotConvertException
+from rcvformats.conversions.electionbuddy import ElectionBuddyConverter
+from rcvformats.conversions.opavote import OpavoteConverter
+from rcvformats.schemas.electionbuddy import SchemaV0 as ElectionBuddySchema
+from rcvformats.schemas.opavote import SchemaV1_0 as OpavoteSchema
 from rcvformats.conversions.base import Converter
 
 
@@ -17,8 +20,8 @@ class AutomaticConverter(Converter):
     def __init__(self):
         # In order of likelihood of a hit - just my guess
         self.additional_schemas = [
-            (schemas.electionbuddy.SchemaV0(), conversions.electionbuddy.ElectionBuddyConverter),
-            (schemas.opavote.SchemaV1_0(), conversions.opavote.OpavoteConverter)
+            (ElectionBuddySchema(), ElectionBuddyConverter),
+            (OpavoteSchema(), OpavoteConverter)
         ]
 
         super().__init__()
@@ -38,7 +41,7 @@ class AutomaticConverter(Converter):
                 return converter().convert_to_ut(file_object)
 
         # If it failed, accumulate all errors from schemas
-        err = conversions.base.CouldNotConvertException("Could not find a compatible parser")
+        err = CouldNotConvertException("Could not find a compatible parser")
         err.args += (self.ut_schema.last_error(),)
         for schema, _ in self.additional_schemas:
             err.args += (schema.last_error(),)
