@@ -100,7 +100,12 @@
               ]
             }
           }
-        }
+        },
+        "required": [
+          "round",
+          "tally",
+          "tallyResults"
+        ]
       }
     }
   },
