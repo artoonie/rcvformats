@@ -13,7 +13,7 @@ class OpavoteConverter(GenericGuessAtTransferConverter):
     """
 
     @classmethod
-    def _get_eliminated_names(cls, candidate_names, rounds, round_i):
+    def _get_eliminated_names(cls, rounds, candidate_names, round_i):
         """
         Opavote format places losses on the round after they happen, whereas
         the Universal Tabulator format places it on the previous round.
@@ -21,18 +21,19 @@ class OpavoteConverter(GenericGuessAtTransferConverter):
         there are no eliminations on the first round, which is what I believe to
         always be the case anyway.
 
-        :param candidate_names: in-order names
         :param rounds: rounds data, direct from the Opavote format
+        :param candidate_names: in-order names
         :param round_i: the current round (we'll look at round_i+1)
         :return: list of names that were eliminated
         """
         if round_i == len(rounds) - 1:
-            return []
-        ids = rounds[round_i + 1]['losers']
+            ids = rounds[-1]['losers']
+        else:
+            ids = rounds[round_i + 1]['losers']
         return [candidate_names[i] for i in ids]
 
     @classmethod
-    def _get_elected_names(cls, candidate_names, rounds, round_i):
+    def _get_elected_names(cls, rounds, candidate_names, round_i):
         """
         :param candidate_names: in-order names
         :param rounds: rounds data, direct from the Opavote format
@@ -72,8 +73,16 @@ class OpavoteConverter(GenericGuessAtTransferConverter):
             ut_rounds.append(ut_round)
 
         self._fill_in_tallyresults(rounds, candidate_names, ut_rounds)
+        self._remove_eliminated_candidates_from_tally(rounds, candidate_names, ut_rounds)
 
         return {'config': ut_config, 'results': ut_rounds}
+
+    @classmethod
+    def _remove_eliminated_candidates_from_tally(cls, rounds, candidate_names, ut_rounds):
+        for round_i in range(1, len(rounds)):
+            already_eliminated = cls._get_eliminated_names(rounds, candidate_names, round_i - 1)
+            for candidate_name in already_eliminated:
+                del ut_rounds[round_i]['tally'][candidate_name]
 
     @classmethod
     def _fill_in_tallyresults(cls, rounds, candidate_names, ut_rounds):
@@ -81,8 +90,8 @@ class OpavoteConverter(GenericGuessAtTransferConverter):
         already_eliminated = set()
         for round_i, _ in enumerate(rounds):
             # Get who was elected and eliminated
-            eliminated_names = cls._get_eliminated_names(candidate_names, rounds, round_i)
-            elected_names = cls._get_elected_names(candidate_names, rounds, round_i)
+            eliminated_names = cls._get_eliminated_names(rounds, candidate_names, round_i)
+            elected_names = cls._get_elected_names(rounds, candidate_names, round_i)
             # Opavote accumulates eliminated candidates. Clean that up.
             eliminated_names = [n for n in eliminated_names if n not in already_eliminated]
             already_eliminated.update(eliminated_names)
