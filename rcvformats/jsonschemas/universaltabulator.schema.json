@@ -86,7 +86,7 @@
                   }
                 }
               },
-              "oneOf": [
+              "anyOf": [
                 {
                   "required": [
                     "elected"
