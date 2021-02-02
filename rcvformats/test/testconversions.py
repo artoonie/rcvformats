@@ -19,6 +19,14 @@ def _assert_conversion_correct(file_in, file_out, converter):
     nose.tools.assert_dict_equal(actual_data, expected_data)
 
 
+def _files_in_dir(input_dir):
+    """ Yields all CSV and json files in dir """
+    for filename in os.listdir(input_dir):
+        if not filename.endswith('.json') and not filename.endswith('.csv'):
+            continue
+        yield filename
+
+
 def _assert_auto_gives_same_result_as(input_dir, direct_converter):
     """
     Asserts that the AutomaticConverter creates the same results as the provided one
@@ -26,7 +34,7 @@ def _assert_auto_gives_same_result_as(input_dir, direct_converter):
     """
     auto_converter = automatic.AutomaticConverter()
 
-    for filename in os.listdir(input_dir):
+    for filename in _files_in_dir(input_dir):
         filepath = os.path.join(input_dir, filename)
         auto_data = auto_converter.convert_to_ut_and_validate(filepath)
         expected_data = direct_converter.convert_to_ut_and_validate(filepath)
@@ -47,7 +55,7 @@ def test_electionbuddy_conversions_succeed():
 
 
 def test_opavote_conversion_accurate():
-    """ Converts opavote CSV to standard format """
+    """ Converts opavote JSON to standard format """
     file_in = 'testdata/inputs/opavote/fairvote.json'
     file_out = 'testdata/conversions/from-opavote.json'
     converter = opavote.OpavoteConverter()
@@ -67,7 +75,7 @@ def test_automatic_conversions_universal_tabulator():
     converter = automatic.AutomaticConverter()
     input_dir = 'testdata/inputs/universal-tabulator'
 
-    for filename in os.listdir(input_dir):
+    for filename in _files_in_dir(input_dir):
         filepath = os.path.join(input_dir, filename)
         output_data = converter.convert_to_ut_and_validate(filepath)
 
