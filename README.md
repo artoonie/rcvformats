@@ -4,9 +4,9 @@
 # RCV Formats
 Build tools for the Ranked Choice Voting Ecosystem without having to support each file format individually. RCV Formats converts data from several sources into a single, standardized format with just one line of code:
 ```python
-from rcvformats.converters.automatic import AutomaticConverter
+from rcvformats.conversions.automatic import AutomaticConverter
 
-standardized_format = AutomaticConverter().convert_to_ut(arbitrary_format)
+standardized_format = AutomaticConverter().convert_to_ut("any-file-format.json")
 ```
 
 The standardized format is the [Universal RCV Tabulator JSON](https://www.rankedchoicevoting.org/universal_rcv_tabulator). To understand this format, look at [examples](https://github.com/artoonie/rcvformats/tree/main/testdata/inputs/universal-tabulator) or [the jsonschema](https://github.com/artoonie/rcvformats/blob/main/rcvformats/jsonschemas/universaltabulator.schema.json).

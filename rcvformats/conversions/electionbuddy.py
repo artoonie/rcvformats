@@ -94,7 +94,7 @@ class ElectionBuddyConverter(GenericGuessAtTransferConverter):
         candidates = rounds[round_i]['candidates']
         threshold = cls._threshold_for_round(rounds, round_i)
         elected_names = [name for name in candidates if candidates[name]
-                         >= threshold and name not in already_elected_set]
+                         > threshold and name not in already_elected_set]
         already_elected_set.update(elected_names)
         return elected_names
 

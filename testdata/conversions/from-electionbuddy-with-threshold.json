@@ -1,7 +1,7 @@
 {
   "config": {
     "contest": "\ufeffTest basic transfer, with zero-transfer regression test",
-    "threshold": "3.0"
+    "threshold": "2.0"
   },
   "results": [
     {
@@ -15,6 +15,11 @@
       "tallyResults": [
         {
           "eliminated": "Nobody",
+          "transfers": {
+          }
+        },
+        {
+          "elected": "Strawberry",
           "transfers": {
           }
         }
@@ -43,8 +48,13 @@
         "Strawberry": 3.0
       },
       "tallyResults": [
+        {
+          "elected": "Vanilla",
+          "transfers": {}
+        }
       ]
     }
   ]
 }
+
 
