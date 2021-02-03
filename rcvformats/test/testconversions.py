@@ -13,6 +13,7 @@ from rcvformats.conversions import opavote
 
 def _assert_conversion_correct(file_in, file_out, converter):
     """ Asserts that converter.convert_to_ut(file_in) = file_out """
+    nose.tools.assert_dict_equal.__self__.maxDiff = None
     actual_data = converter.convert_to_ut_and_validate(file_in)
     with open(file_out, 'r') as file_obj:
         expected_data = json.load(file_obj)
@@ -66,6 +67,11 @@ def test_electionbuddy_conversion_accurate():
     """ Converts electionbuddy CSV to the standard format """
     file_in = 'testdata/inputs/electionbuddy/standard.csv'
     file_out = 'testdata/conversions/from-electionbuddy.json'
+    converter = electionbuddy.ElectionBuddyConverter()
+    _assert_conversion_correct(file_in, file_out, converter)
+
+    file_in = 'testdata/inputs/electionbuddy/standard-with-threshold.csv'
+    file_out = 'testdata/conversions/from-electionbuddy-with-threshold.json'
     converter = electionbuddy.ElectionBuddyConverter()
     _assert_conversion_correct(file_in, file_out, converter)
 
