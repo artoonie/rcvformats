@@ -112,7 +112,11 @@ class GenericGuessAtTransferConverter(Converter):
         # Sanity check 2: can't gain more votes than you lost.
         # Exhausted ballots account for the inequality: lost ballots that were not gained anywhere
         votes_added = sum(d for d in vote_delta.values() if d > 0)
-        assert votes_subtracted >= votes_added
+        if votes_subtracted + 1e-8 < votes_added:
+            raise ValueError("You must not increase votes between rounds. On the round where "
+                             f"candidate {eliminated_names} was eliminated, there were "
+                             f"{votes_added} votes added and {votes_subtracted} votes subtracted, "
+                             f"a difference of {votes_added-votes_subtracted}")
 
         return weights
 
