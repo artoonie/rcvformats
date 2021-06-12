@@ -118,7 +118,7 @@
       "anyOf": [
         {
           "type": "string",
-          "pattern": "^\\d*[.]{0,1}\\d*$"
+          "pattern": "^\\d*[.]{0,1}\\d+$"
         },
         {
           "type": "number"
