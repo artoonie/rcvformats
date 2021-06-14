@@ -60,9 +60,9 @@ def test_empty_threshold_not_valid():
     assert not schema.validate(badjson_tempfile.name)
 
 
-def test_threshold_is_optional():
-    """ Verifies that threshold may be nonexistent """
+def test_threshold_is_required():
+    """ Verifies that threshold must exist """
     badjson_tempfile = _modify_json_with('testdata/inputs/universal-tabulator/one-round.json',
                                          lambda d: d['config'].pop('threshold'))
     schema = universaltabulator.SchemaV0()
-    assert schema.validate(badjson_tempfile.name)
+    assert not schema.validate(badjson_tempfile.name)
