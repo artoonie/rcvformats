@@ -33,10 +33,10 @@ You can run the validation and examine errors via:
 from rcvformats.schemas import universaltabulator
 
 schema = universaltabulator.SchemaV0()
-is_valid = schema.validate_file('/path/to/file.json')
+is_valid = schema.validate('/path/to/file.json')
 
 if not is_valid:
-  print(schema.get_last_error())
+  print(schema.last_error())
 ```
 
 Valid schema validators are:
