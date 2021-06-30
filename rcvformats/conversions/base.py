@@ -107,7 +107,15 @@ class GenericGuessAtTransferConverter(Converter):
 
         # Sanity check 1: weights must add up to 1
         if votes_subtracted != 0:
-            assert abs(sum(weights.values()) - 1.0) < 1e-8
+            if abs(sum(weights.values()) - 1.0) > 1e-8:
+                votes_gained = sum(vote_delta.values())
+                message = "Weights do not line up. This data is invalid. "\
+                          f"In the round where {eliminated_names} were eliminated and "\
+                          f"{elected_names} were elected, there were {votes_subtracted} "\
+                          f"votes lost from the outgoing candidates, but {votes_gained} "\
+                          "votes gained from continuing candidates. The number of votes must "\
+                          "stay the same or decrease between rounds."
+                raise ValueError(message)
 
         # Sanity check 2: can't gain more votes than you lost.
         # Exhausted ballots account for the inequality: lost ballots that were not gained anywhere
@@ -192,10 +200,14 @@ class GenericGuessAtTransferConverter(Converter):
             for from_name in names:
                 tally_result = {}
                 tally_result[method] = from_name
-                tally_result['transfers'] = {
+                transfers = {
                     to_name: vote_delta[to_name] * weights[from_name]
                     for to_name in names_to_transfer_to
                     if vote_delta[to_name] != 0
                 }
+                if transfers or method == 'eliminated':
+                    # only add transfers on winners if ther
+                    tally_result['transfers'] = transfers
+
                 tally_results.append(tally_result)
         return tally_results

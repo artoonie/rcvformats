@@ -19,9 +19,7 @@
           }
         },
         {
-          "elected": "Strawberry",
-          "transfers": {
-          }
+          "elected": "Strawberry"
         }
       ]
     },
@@ -49,8 +47,7 @@
       },
       "tallyResults": [
         {
-          "elected": "Vanilla",
-          "transfers": {}
+          "elected": "Vanilla"
         }
       ]
     }
