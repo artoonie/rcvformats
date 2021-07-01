@@ -28,4 +28,7 @@ setup(
     install_requires=[
         'jsonschema'
     ],
+    entry_points={
+        'console_scripts': ['rcvformats=rcvformats.bin.cli:main'],
+    }
 )

@@ -2,11 +2,20 @@
 [![Documentation Status](https://readthedocs.org/projects/rcvformats/badge/?version=latest)](https://rcvformats.readthedocs.io/en/latest/?badge=latest)
 
 # RCV Formats
-Build tools for the Ranked Choice Voting Ecosystem without having to support each file format individually. RCV Formats converts data from several sources into a single, standardized format with just one line of code:
+Build tools for the Ranked Choice Voting Ecosystem without having to support each file format individually. RCV Formats converts data from several sources into a single, standardized format with a command-line or python tooling.
+
+#### Command-line
+
+```bash
+rcvformats convert -i <input-filename> -o <output-filename>
+```
+
+#### Python
+
 ```python
 from rcvformats.conversions.automatic import AutomaticConverter
 
-standardized_format = AutomaticConverter().convert_to_ut("any-file-format.json")
+standardized_data = AutomaticConverter().convert_to_ut(input_filename)
 ```
 
 The standardized format is the [Universal RCV Tabulator JSON](https://www.rcvresources.org/rcv-universal-tabulator). To understand this format, look at [examples](https://github.com/artoonie/rcvformats/tree/main/testdata/inputs/universal-tabulator) or [the jsonschema](https://github.com/artoonie/rcvformats/blob/main/rcvformats/jsonschemas/universaltabulator.schema.json).
@@ -28,7 +37,23 @@ Validate that your file format matches one of several available schemas:
 
 Currently, validation is only on the structure of the data, not on its contents: it is possible for a validly-formatted file to still contain invalid data.
 
-You can run the validation and examine errors via:
+You can run the validation and examine errors with both python and bash:
+
+#### Command-line
+
+```bash
+rcvformats validate -i <input-filename> -s <schema-type>
+```
+
+Valid schema validators on the command line are:
+```bash
+eb # for electionbuddy files
+ov # for opavote files
+ut # for universal tabulator files
+```
+
+#### Python
+
 ```python
 from rcvformats.schemas import universaltabulator
 
@@ -39,7 +64,7 @@ if not is_valid:
   print(schema.last_error())
 ```
 
-Valid schema validators are:
+Valid schema validators for python are:
 ```python
 from rcvformats.schemas.electionbuddy import SchemaV0
 from rcvformats.schemas.opavote import SchemaV1_0
@@ -52,6 +77,16 @@ You can convert from any of the supported formats and to the Universal RCV Tabul
 2. Opavote JSONs
 
 You can run the conversion via:
+
+#### Command-line
+
+```bash
+rcvformats convert -i <input-filename> -o <output-filename>
+```
+
+The bash script always uses the automatic converter.
+
+#### Python
 
 ```python
 from rcvformats.conversions import electionbuddy
@@ -71,6 +106,28 @@ from rcvformats.conversions.opavote import OpavoteConverter
 ```
 
 The AutomaticConverter checks if the file matches any of the available schemas, and if it finds a matching schema, it runs the corresponding conversion (if a conversion is needed at all).
+
+### Fill in missing "transfer" data
+If you have a file format that does not have transfer data, and wish to generate it, you can use these tools.
+Be careful: if you use batch elimination (more than one candidate eliminated in one round), the data will be fake and you should not rely on it.
+
+#### Command-line
+
+```bash
+rcvformats transfer -i <input-filename> -o <output-filename>
+```
+
+#### Python
+
+```python
+from rcvformats.conversions.ut_without_transfers import UTWithoutTransfersConverter
+
+converter = UTWithoutTransfersConverter()
+try:
+  converter.convert_to_ut(filename)
+except Exception as e:
+  print("Errors: ", e)
+```
 
 ## Upcoming plans
 1. Allow any format to be converted both to and from the Universal Tabulator format

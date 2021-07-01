@@ -20,9 +20,13 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install nose pylint autopep8
         pip install -r requirements.txt
-    - name: Test with nose
+    - name: Unit tests with nose
       run: |
         nosetests
+    - name: CLI tests
+      run: |
+        pip install .
+        ./scripts/testcli.sh
   lint:
     runs-on: ubuntu-20.04
     steps:
