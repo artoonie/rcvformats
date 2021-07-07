@@ -17,9 +17,9 @@ from rcvformats.conversions.ut_without_transfers import UTWithoutTransfersConver
 
 class FormatEnum(Enum):
     """ Enum for validator, and perhaps eventually converter. """
-    ut = 'ut'
-    eb = 'eb'
-    ov = 'ov'
+    UT = 'ut'
+    EB = 'eb'
+    OV = 'ov'
 
     def __str__(self):
         return str(self.value)
@@ -34,11 +34,11 @@ def convert(input_filename, output_filename):
 
 def validate(input_filename, schema):
     """ validates input_filename with schema """
-    if schema == FormatEnum.ut:
+    if schema == FormatEnum.UT:
         schema = schemas.universaltabulator.SchemaV0()
-    elif schema == FormatEnum.eb:
+    elif schema == FormatEnum.EB:
         schema = schemas.electionbuddy.SchemaV0()
-    elif schema == FormatEnum.ov:
+    elif schema == FormatEnum.OV:
         schema = schemas.opavote.SchemaV1_0()
 
     is_valid = schema.validate(input_filename)
