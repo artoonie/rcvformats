@@ -12,6 +12,15 @@ class UTWithoutTransfersConverter(GenericGuessAtTransferConverter):
     Reads an UT-formatted JSON file that is missing "transfers"
     """
 
+    def __init__(self, allow_guessing=True):
+        """
+        @param allow_guessing During batch elimination, should we guess at
+                              where the votes went (distributing them proportionally)
+                              or leave this blank?
+        """
+        self.allow_guessing = allow_guessing
+        super().__init__()
+
     def _convert_file_object_to_ut(self, file_object):
         data = json.load(file_object)
 
@@ -37,19 +46,19 @@ class UTWithoutTransfersConverter(GenericGuessAtTransferConverter):
             for person in round_data['tally']:
                 round_data['tally'][person] = float(round_data['tally'][person])
 
-    @classmethod
-    def _fill_in_tallyresults(cls, rounds):
+    def _fill_in_tallyresults(self, rounds):
         """ Fill out rounds['tallyResults'] based on rounds['tally'] """
         for round_i, _ in enumerate(rounds):
             # Get who was elected and eliminated
-            eliminated_names = cls._get_eliminated_names(rounds, round_i)
-            elected_names = cls._get_elected_names(rounds, round_i)
+            eliminated_names = self._get_eliminated_names(rounds, round_i)
+            elected_names = self._get_elected_names(rounds, round_i)
 
             # Get how the votes change between this round and next
-            vote_delta = cls.compute_vote_deltas_for_round(rounds, round_i)
+            vote_delta = self.compute_vote_deltas_for_round(rounds, round_i)
 
             # Use that to compute the tallyResults structure
-            tally_results = cls.guess_at_tally_results(eliminated_names, elected_names, vote_delta)
+            tally_results = self.guess_at_tally_results(
+                eliminated_names, elected_names, vote_delta, self.allow_guessing)
 
             # Store it, completing the structure for this round
             rounds[round_i]['tallyResults'] = tally_results

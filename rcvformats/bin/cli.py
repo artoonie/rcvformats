@@ -48,10 +48,11 @@ def validate(input_filename, schema):
         print("Schema is not valid. Errors: ", schema.last_error())
 
 
-def add_transfers(input_filename, output_filename):
+def add_transfers(input_filename, output_filename, allow_guessing):
     """ Adds tally transfers if they don't exist. Overwrites them if they do. """
     # Adding transfers, internally, is just another conversion
-    with_transfers = UTWithoutTransfersConverter().convert_to_ut(input_filename)
+    converter = UTWithoutTransfersConverter(allow_guessing=allow_guessing)
+    with_transfers = converter.convert_to_ut(input_filename)
     with open(output_filename, 'w') as file_obj:
         json.dump(with_transfers, file_obj)
 
@@ -104,6 +105,14 @@ def main():
         'transfer', help='Adds "transfers" to the tallyResults of an otherwise-valid UI format')
     _add_input_arg(xfer_parser)
     _add_output_arg(xfer_parser)
+    xfer_parser.add_argument(
+        '-g',
+        '--allow-guessing',
+        dest='allow_guessing',
+        action='store_true',
+        help='During batch elimination, may we guess at the vote transfers? '
+             'If not, will leave transfers blank for all batch elimination rounds.',
+        required=False)
 
     args = parser.parse_args()
     if args.subparser is None:
@@ -115,4 +124,4 @@ def main():
     if args.subparser == 'validate':
         validate(args.input_filename, args.schema)
     if args.subparser == 'transfer':
-        add_transfers(args.input_filename, args.output_filename)
+        add_transfers(args.input_filename, args.output_filename, args.allow_guessing)

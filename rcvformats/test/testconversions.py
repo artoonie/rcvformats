@@ -9,6 +9,7 @@ import nose
 from rcvformats.conversions import automatic
 from rcvformats.conversions import electionbuddy
 from rcvformats.conversions import opavote
+from rcvformats.conversions.ut_without_transfers import UTWithoutTransfersConverter
 
 
 def _assert_conversion_correct(file_in, file_out, converter):
@@ -104,3 +105,50 @@ def test_automatic_conversions_electionbuddy():
     converter = electionbuddy.ElectionBuddyConverter()
     input_dir = 'testdata/inputs/electionbuddy'
     _assert_auto_gives_same_result_as(input_dir, converter)
+
+
+def _does_all_single_elim_have_transfer_data(data):
+    for result in data['results']:
+        tally_results = result['tallyResults']
+        if len(tally_results) != 1:
+            continue
+
+        tally_result = tally_results[0]
+        if 'elected' in tally_result:
+            continue
+
+        if not tally_result['transfers']:
+            return False
+    return True
+
+
+def _does_all_batch_elim_have_transfer_data(data):
+    for result in data['results']:
+        tally_results = result['tallyResults']
+        if len(tally_results) == 1:
+            continue
+
+        for tally_result in tally_results:
+            if 'elected' in tally_result:
+                continue
+            if not tally_result['transfers']:
+                return False
+    return True
+
+
+def test_add_xfer_without_fake_data():
+    """ Tests allow_guessing=False in UT Without Transfers """
+    converter = UTWithoutTransfersConverter(allow_guessing=False)
+    input_filename = 'testdata/inputs/ut-without-transfers/nyc-batch-elim.json'
+    with_transfers = converter.convert_to_ut(input_filename)
+    assert _does_all_single_elim_have_transfer_data(with_transfers)
+    assert not _does_all_batch_elim_have_transfer_data(with_transfers)
+
+
+def test_add_xfer_with_fake_data():
+    """ Tests allow_guessing=True in UT Without Transfers """
+    converter = UTWithoutTransfersConverter(allow_guessing=True)
+    input_filename = 'testdata/inputs/ut-without-transfers/nyc-batch-elim.json'
+    with_transfers = converter.convert_to_ut(input_filename)
+    assert _does_all_single_elim_have_transfer_data(with_transfers)
+    assert _does_all_batch_elim_have_transfer_data(with_transfers)

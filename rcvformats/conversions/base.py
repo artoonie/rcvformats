@@ -172,7 +172,12 @@ class GenericGuessAtTransferConverter(Converter):
         return cls._compute_vote_deltas_from_tally(tally_this_round, tally_next_round)
 
     @classmethod
-    def guess_at_tally_results(cls, eliminated_names, elected_names, vote_delta):
+    def guess_at_tally_results(
+            cls,
+            eliminated_names,
+            elected_names,
+            vote_delta,
+            allow_guessing=True):
         """
         Computes the tallyResult, the difference between this round and the next
         See the description of @_compute_tally_results to understand why, in the case of
@@ -182,6 +187,7 @@ class GenericGuessAtTransferConverter(Converter):
         :param elected_names: the names of each elected candidate
         :param vote_delta: a dict mapping candidate name to vote difference \
                            between this round and the next round.
+        :param allow_guessing: Allow guessing of transfer data during batch elimination
         :return: The contents of the tallyResults dict
         """
         weights = cls._weights_for_each_transfer(eliminated_names, elected_names, vote_delta)
@@ -200,13 +206,17 @@ class GenericGuessAtTransferConverter(Converter):
             for from_name in names:
                 tally_result = {}
                 tally_result[method] = from_name
-                transfers = {
-                    to_name: vote_delta[to_name] * weights[from_name]
-                    for to_name in names_to_transfer_to
-                    if vote_delta[to_name] != 0
-                }
+                is_batch_elimination_round = len(names) > 1
+                if not is_batch_elimination_round or allow_guessing:
+                    transfers = {
+                        to_name: vote_delta[to_name] * weights[from_name]
+                        for to_name in names_to_transfer_to
+                        if vote_delta[to_name] != 0
+                    }
+                else:
+                    transfers = {}
                 if transfers or method == 'eliminated':
-                    # only add transfers on winners if ther
+                    # only add transfers on winners if they have actually been transferred
                     tally_result['transfers'] = transfers
 
                 tally_results.append(tally_result)
