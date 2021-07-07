@@ -28,7 +28,7 @@ def _modify_json_with(json_filename, modifier_func):
         modifier_func(data)
 
     # Write it to a tempfile
-    modified_json_tempfile = tempfile.NamedTemporaryFile()
+    modified_json_tempfile = tempfile.NamedTemporaryFile()  # pylint: disable=consider-using-with
     with open(modified_json_tempfile.name, 'w') as file_obj:
         json.dump(data, file_obj)
     return modified_json_tempfile
