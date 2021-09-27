@@ -2,7 +2,18 @@
 [![Documentation Status](https://readthedocs.org/projects/rcvformats/badge/?version=latest)](https://rcvformats.readthedocs.io/en/latest/?badge=latest)
 
 # RCV Formats
-Build tools for the Ranked Choice Voting Ecosystem without having to support each file format individually. RCV Formats converts data from several sources into a single, standardized format with a command-line or python tooling.
+RCV Formats helps programmers and researchers build tools that analyze the results of a Ranked-Choice Voting election without having to support the many file formats used to report RCV results.
+
+RCV Formats converts data from several sources into a standardized format. It supports both python and command-line tools
+
+Currently supported input formats are:
+1. The Universal RCV Tabulator JSON format
+2. The Opavote JSON format
+3. The ElectionBuddy CSV format
+
+The standardized output format is the [Universal RCV Tabulator JSON](https://www.rcvresources.org/rcv-universal-tabulator). To understand this format, look at [examples](https://github.com/artoonie/rcvformats/tree/main/testdata/inputs/universal-tabulator) or [the jsonschema](https://github.com/artoonie/rcvformats/blob/main/rcvformats/jsonschemas/universaltabulator.schema.json).
+
+## Demo
 
 #### Command-line
 
@@ -18,65 +29,15 @@ from rcvformats.conversions.automatic import AutomaticConverter
 standardized_data = AutomaticConverter().convert_to_ut(input_filename)
 ```
 
-The standardized format is the [Universal RCV Tabulator JSON](https://www.rcvresources.org/rcv-universal-tabulator). To understand this format, look at [examples](https://github.com/artoonie/rcvformats/tree/main/testdata/inputs/universal-tabulator) or [the jsonschema](https://github.com/artoonie/rcvformats/blob/main/rcvformats/jsonschemas/universaltabulator.schema.json).
-
 
 ## Installation
+Install the library via pip:
+
 `pip3 install rcvformats`
 
-
-## Additional Options
-RCV Formats can also run schema validations and conversions from specific formats.
-
-### Schema Validation
-Validate that your file format matches one of several available schemas:
-
-1. The Universal RCV Tabulator JSON format
-2. The Opavote JSON format
-3. The ElectionBuddy CSV format
-
-Currently, validation is only on the structure of the data, not on its contents: it is possible for a validly-formatted file to still contain invalid data.
-
-You can run the validation and examine errors with both python and bash:
-
-#### Command-line
-
-```bash
-rcvformats validate -i <input-filename> -s <schema-type>
-```
-
-Valid schema validators on the command line are:
-```bash
-eb # for electionbuddy files
-ov # for opavote files
-ut # for universal tabulator files
-```
-
-#### Python
-
-```python
-from rcvformats.schemas import universaltabulator
-
-schema = universaltabulator.SchemaV0()
-is_valid = schema.validate('/path/to/file.json')
-
-if not is_valid:
-  print(schema.last_error())
-```
-
-Valid schema validators for python are:
-```python
-from rcvformats.schemas.electionbuddy import SchemaV0
-from rcvformats.schemas.opavote import SchemaV1_0
-from rcvformats.schemas.universaltabulator import SchemaV0
-```
-
-### File Format Conversion
-You can convert from any of the supported formats and to the Universal RCV Tabulator format. The currently supported formats are:
-1. ElectionBuddy CSVs
-2. Opavote JSONs
-
-You can run the conversion via:
+## Convert to Standardized Format
+You can convert from any of the supported formats.
+Use this functionality to support a wide array of input data while only writing code to support a single format.
 
 #### Command-line
 
@@ -107,9 +68,45 @@ from rcvformats.conversions.opavote import OpavoteConverter
 
 The AutomaticConverter checks if the file matches any of the available schemas, and if it finds a matching schema, it runs the corresponding conversion (if a conversion is needed at all).
 
-### Fill in missing "transfer" data
-If you have a file format that does not have transfer data, and wish to generate it, you can use these tools.
-Be careful: if you use batch elimination (more than one candidate eliminated in one round), the data will be fake and you should not rely on it.
+
+## Schema Validation
+Validate that your file is supported by RCVFormats.
+
+Validation is only on the structure of the data, not on its contents: it is possible for a validly-formatted file to still contain invalid data.
+
+#### Command-line
+
+```bash
+rcvformats validate -i <input-filename> -s <schema-type>
+```
+
+Valid schema validators on the command line are 'eb' (for electionbuddy files), `ov` (for opavote files), `ut` (for universal tabulator files).
+
+#### Python
+
+```python
+from rcvformats.schemas import universaltabulator
+
+schema = universaltabulator.SchemaV0()
+is_valid = schema.validate('/path/to/file.json')
+
+if not is_valid:
+  print(schema.last_error())
+```
+
+Valid schema validators for python are:
+```python
+from rcvformats.schemas.electionbuddy import SchemaV0
+from rcvformats.schemas.opavote import SchemaV1_0
+from rcvformats.schemas.universaltabulator import SchemaV0
+```
+
+### Fill in missing transfer data
+Transfer data is useful to determine where votes went when a candidate was eliminated, or when a candidate was elected and had surplus votes (in STV).
+
+If you have a file format that does not have transfer data, there are three options: you can leave it out entirely, you can assign transfers proportionally to each eliminated candidate, or you can assign only the transfers that are unambiguous.
+We recommend the last option, which prepares transfer data for any round that does not involve batch elimination.
+The second option results in fake data which cannot be relied upon for any results reporting or analyses.
 
 #### Command-line
 
