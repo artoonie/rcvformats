@@ -39,7 +39,7 @@ class Converter(abc.ABC):
         """
         try:
             ut_format = self.convert_to_ut(filename_or_fileobj)
-            if not self.ut_schema.validate_data(ut_format):
+            if not self.ut_schema.validate_schema_and_logic(ut_format):
                 raise CouldNotConvertException(self.ut_schema.last_error())
         except Exception as unknown_error:
             raise CouldNotConvertException from unknown_error

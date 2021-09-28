@@ -2,7 +2,7 @@
 Loads the universal tabulator schema
 """
 
-from rcvformats.schemas.base import GenericJsonSchema
+from rcvformats.schemas.base import GenericJsonSchema, DataError
 
 
 class SchemaV0(GenericJsonSchema):
@@ -14,3 +14,41 @@ class SchemaV0(GenericJsonSchema):
 
     def version(self):
         return "Unversioned:V0"
+
+    def ensure_data_is_logical(self, data):
+        """
+        Various checks to ensure the data is sane - though it cannot catch everything,
+        we have tried to place the most common errors here
+        """
+        self.check_last_round_eliminations(data)
+        self.check_candidate_leaves_after_elimination(data)
+
+    def check_last_round_eliminations(self, data):
+        """
+        No eliminations allowed on the last round
+        """
+        last_round_tally_results = data['results'][-1]['tallyResults']
+        for tally_result in last_round_tally_results:
+            if 'eliminated' in tally_result:
+                raise DataError("There cannot be an elimination on the last round. "\
+                        "All eliminations require one additonal round to signify where the "\
+                        "votes have been transferred to.")
+
+    def check_candidate_leaves_after_elimination(self, data):
+        """
+        After a candidate is eliminated, ensure they are not listed later as having
+        zero votes. They should be removed from the list.
+        """
+        eliminated_so_far = set()
+        for round_num, result in enumerate(data['results']):
+            tally = result['tally']
+            for name in tally:
+                if name in eliminated_so_far:
+                    raise DataError(f"Found {name} in Round {round_num+1}, though they were "\
+                            "already eliminated. After a candidate is eliminated, they should "\
+                            "be removed from all future vote tallies.")
+
+            tally_results = result['tallyResults']
+            for tally_result in tally_results:
+                if 'eliminated' in tally_result:
+                    eliminated_so_far.add(tally_result['eliminated'])

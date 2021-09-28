@@ -21,10 +21,12 @@ class DominionConverter(GenericGuessAtTransferConverter):
 
         results = self.get_vote_counts_per_candidate()
 
-        urcvt_format = {'config': config, 'results': results}
+        urcvt_data = {'config': config, 'results': results}
 
         wb.close()
-        return urcvt_format
+
+        self.postprocess_remove_last_round_elimination(urcvt_data)
+        return urcvt_data
 
     def parse_config(self):
         title = self.sheet['A7'].value
@@ -148,7 +150,7 @@ class DominionConverter(GenericGuessAtTransferConverter):
             if fill_type is not None:
                 bg_color = cell.fill.bgColor.rgb
                 if self.is_eliminated_color(bg_color):
-                    eliminated_names.append(name)
+                    eliminated_names.add(name)
                     tallyResults.append({'eliminated': name})
                 elif self.is_elected_color(bg_color):
                     tallyResults.append({'elected': name})
@@ -160,7 +162,7 @@ class DominionConverter(GenericGuessAtTransferConverter):
 
     def get_vote_counts_per_candidate(self):
         results = []
-        eliminated_names = []
+        eliminated_names = set()
         for (round_num, col) in self.roundinfo:
             tally, tallyResults, eliminated_names = \
                     self.parse_tally_for_round_at_column(col, eliminated_names)
@@ -169,6 +171,16 @@ class DominionConverter(GenericGuessAtTransferConverter):
                 'tally': tally,
                 'tallyResults': tallyResults})
         return results
+
+    def postprocess_remove_last_round_elimination(self, data):
+        """
+        When there are two candidates left, Dominion marks the loser among them as
+        "eliminated", whereas the URCVT format does not.
+        """
+        last_round_tally_results = data['results'][-1]['tallyResults']
+        last_round_tally_results = [t for t in last_round_tally_results if 'eliminated' not in t]
+        data['results'][-1]['tallyResults'] = last_round_tally_results
+
 
 tf1 = 'DominionTestFile.xlsx'
 tf2 = '../../testdata/inputs/dominion/las-cruces-mayor.xlsx'
