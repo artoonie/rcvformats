@@ -11,7 +11,7 @@ class DominionConverter(GenericGuessAtTransferConverter):
     These are .xlsx files
     """
     def _convert_file_object_to_ut(self, file_object):
-        tf = '../../testdata/inputs/dominion/las-cruces-mayor.xlsx'
+        tf = 'testdata/inputs/dominion/las-cruces-mayor.xlsx'
         wb = load_workbook(filename=tf)  # note: somehow, readonly is 2x slower
         self.sheet = wb.active
 
@@ -183,7 +183,7 @@ class DominionConverter(GenericGuessAtTransferConverter):
 
 
 tf1 = 'DominionTestFile.xlsx'
-tf2 = '../../testdata/inputs/dominion/las-cruces-mayor.xlsx'
+tf2 = 'testdata/inputs/dominion/las-cruces-mayor.xlsx'
 
 converter = DominionConverter()
 output = converter.convert_to_ut_and_validate(tf2)
