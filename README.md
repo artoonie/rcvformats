@@ -133,4 +133,4 @@ except Exception as e:
 4. Validation for both tabulated formats and cast vote records
 
 ## Running test suite
-Run `nosetests` in the root directory
+Run `python3 -m nose` in the root directory

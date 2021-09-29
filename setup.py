@@ -26,7 +26,9 @@ setup(
     include_package_data=True,
     python_requires='>=3',
     install_requires=[
-        'jsonschema'
+        'jsonschema',
+        'openpyxl',
+        'defusedxml'
     ],
     entry_points={
         'console_scripts': ['rcvformats=rcvformats.bin.cli:main'],
