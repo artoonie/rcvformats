@@ -28,7 +28,7 @@ class FormatEnum(Enum):
 def convert(input_filename, output_filename):
     """ Automatic converter from input_filename to output_filename """
     standardized_format = AutomaticConverter().convert_to_ut(input_filename)
-    with open(output_filename, 'w') as file_obj:
+    with open(output_filename, 'w', encoding='utf-8') as file_obj:
         json.dump(standardized_format, file_obj)
 
 
@@ -53,7 +53,7 @@ def add_transfers(input_filename, output_filename, allow_guessing):
     # Adding transfers, internally, is just another conversion
     converter = UTWithoutTransfersConverter(allow_guessing=allow_guessing)
     with_transfers = converter.convert_to_ut(input_filename)
-    with open(output_filename, 'w') as file_obj:
+    with open(output_filename, 'w', encoding='utf-8') as file_obj:
         json.dump(with_transfers, file_obj)
 
 

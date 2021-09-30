@@ -17,7 +17,7 @@ def _assert_conversion_correct(file_in, file_out, converter):
     """ Asserts that converter.convert_to_ut(file_in) = file_out """
     nose.tools.assert_dict_equal.__self__.maxDiff = None
     actual_data = converter.convert_to_ut_and_validate(file_in)
-    with open(file_out, 'r') as file_obj:
+    with open(file_out, 'r', encoding='utf-8') as file_obj:
         expected_data = json.load(file_obj)
     nose.tools.assert_dict_equal(actual_data, expected_data)
 
@@ -96,7 +96,7 @@ def test_automatic_conversions_universal_tabulator():
         output_data = converter.convert_to_ut_and_validate(filepath)
 
         # Must be unchanged
-        with open(filepath, 'r') as input_file:
+        with open(filepath, 'r', encoding='utf-8') as input_file:
             input_data = json.load(input_file)
 
         nose.tools.assert_dict_equal(input_data, output_data)

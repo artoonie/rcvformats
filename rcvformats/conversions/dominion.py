@@ -209,8 +209,7 @@ class DominionConverter(GenericGuessAtTransferConverter):
         starting_candidate_row = self.FIRST_CANDIDATE_ON_ROW
         tally = {}
         tally_results = []
-        for i in range(len(self.candidates)):
-            name = self.candidates[i]
+        for i, name in enumerate(self.candidates):
             if name in eliminated_names:
                 continue
 

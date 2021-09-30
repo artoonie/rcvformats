@@ -75,7 +75,7 @@ class GenericJsonSchema(Schema):
     def __init__(self):
         filename = self.schema_filename
         filepath = os.path.join(self._get_jsonschema_directory(), filename)
-        with open(filepath, 'r') as file_object:
+        with open(filepath, 'r', encoding='utf-8') as file_object:
             self.schema = json.load(file_object)
 
         super().__init__()
