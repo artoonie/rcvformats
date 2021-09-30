@@ -60,6 +60,8 @@ class Converter(abc.ABC):
             if utils.is_filename(filename_or_fileobj):
                 with open(filename_or_fileobj, 'rb') as file_object:
                     return self._convert_file_object_to_ut(file_object)
+        except CouldNotConvertException as known_error:
+            raise known_error
         except Exception as unknown_error:
             raise CouldNotConvertException from unknown_error
 
