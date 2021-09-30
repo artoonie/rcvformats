@@ -37,12 +37,9 @@ class Converter(abc.ABC):
         :return: Guaranteed-valid Universal Tabulator data
         :raises CouldNotConvertException: If the conversion could not complete
         """
-        try:
-            ut_format = self.convert_to_ut(filename_or_fileobj)
-            if not self.ut_schema.validate_schema_and_logic(ut_format):
-                raise CouldNotConvertException(self.ut_schema.last_error())
-        except Exception as unknown_error:
-            raise CouldNotConvertException from unknown_error
+        ut_format = self.convert_to_ut(filename_or_fileobj)
+        if not self.ut_schema.validate_schema_and_logic(ut_format):
+            raise CouldNotConvertException(self.ut_schema.last_error())
 
         return ut_format
 
@@ -54,12 +51,18 @@ class Converter(abc.ABC):
         :return: The Universal Tabulator representation of this data.\
                  Call :func:`~convert_to_ut_and_validate` to guarantee that \
                  it matches the Universal Tabulator schema.
+        :raises CouldNotConvertException: If the conversion could not complete
+        :raises CouldNotOpenFileException: If the file couldn't be opened
         """
-        if utils.is_file_obj(filename_or_fileobj):
-            return self._convert_file_object_to_ut(filename_or_fileobj)
-        if utils.is_filename(filename_or_fileobj):
-            with open(filename_or_fileobj, 'rb') as file_object:
-                return self._convert_file_object_to_ut(file_object)
+        try:
+            if utils.is_file_obj(filename_or_fileobj):
+                return self._convert_file_object_to_ut(filename_or_fileobj)
+            if utils.is_filename(filename_or_fileobj):
+                with open(filename_or_fileobj, 'rb') as file_object:
+                    return self._convert_file_object_to_ut(file_object)
+        except Exception as unknown_error:
+            raise CouldNotConvertException from unknown_error
+
         raise CouldNotOpenFileException(f"Could not open {filename_or_fileobj}")
 
     @abc.abstractmethod

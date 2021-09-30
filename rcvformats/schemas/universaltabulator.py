@@ -23,18 +23,20 @@ class SchemaV0(GenericJsonSchema):
         self.check_last_round_eliminations(data)
         self.check_candidate_leaves_after_elimination(data)
 
-    def check_last_round_eliminations(self, data):
+    @classmethod
+    def check_last_round_eliminations(cls, data):
         """
         No eliminations allowed on the last round
         """
         last_round_tally_results = data['results'][-1]['tallyResults']
         for tally_result in last_round_tally_results:
             if 'eliminated' in tally_result:
-                raise DataError("There cannot be an elimination on the last round. "\
-                        "All eliminations require one additonal round to signify where the "\
-                        "votes have been transferred to.")
+                raise DataError("There cannot be an elimination on the last round. "
+                                "All eliminations require one additonal round to signify where the "
+                                "votes have been transferred to.")
 
-    def check_candidate_leaves_after_elimination(self, data):
+    @classmethod
+    def check_candidate_leaves_after_elimination(cls, data):
         """
         After a candidate is eliminated, ensure they are not listed later as having
         zero votes. They should be removed from the list.
@@ -44,9 +46,10 @@ class SchemaV0(GenericJsonSchema):
             tally = result['tally']
             for name in tally:
                 if name in eliminated_so_far:
-                    raise DataError(f"Found {name} in Round {round_num+1}, though they were "\
-                            "already eliminated. After a candidate is eliminated, they should "\
-                            "be removed from all future vote tallies.")
+                    raise DataError(
+                        f"Found {name} in Round {round_num+1}, though they were "
+                        "already eliminated. After a candidate is eliminated, they should "
+                        "be removed from all future vote tallies.")
 
             tally_results = result['tallyResults']
             for tally_result in tally_results:

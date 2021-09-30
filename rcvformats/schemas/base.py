@@ -14,6 +14,7 @@ from rcvformats.common import utils
 class DataError(Exception):
     """ An error raised if the schema is correct, but the data inside it is invalid """
 
+
 class Schema(abc.ABC):
     """
     A single version of a single schema
@@ -88,7 +89,7 @@ class GenericJsonSchema(Schema):
         try:
             file_bytes = file_object.read()
             data = json.loads(file_bytes)
-        except json.decoder.JSONDecodeError as error:
+        except (json.decoder.JSONDecodeError, UnicodeDecodeError) as error:
             self._last_error = error
             return False
 
