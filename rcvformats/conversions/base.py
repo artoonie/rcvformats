@@ -58,7 +58,7 @@ class Converter(abc.ABC):
         if utils.is_file_obj(filename_or_fileobj):
             return self._convert_file_object_to_ut(filename_or_fileobj)
         if utils.is_filename(filename_or_fileobj):
-            with open(filename_or_fileobj, 'r') as file_object:
+            with open(filename_or_fileobj, 'rb') as file_object:
                 return self._convert_file_object_to_ut(file_object)
         raise CouldNotOpenFileException(f"Could not open {filename_or_fileobj}")
 

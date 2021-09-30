@@ -1,0 +1,153 @@
+{
+  "config": {
+    "contest": "Dona Ana County",
+    "date": "2019-11-05",
+    "office": "MAYOR CITY OF LAS CRUCES"
+  },
+  "results": [
+    {
+      "round": 1,
+      "tally": {
+        "JORGE SANCHEZ": 210.0,
+        "GREGORY Z SMITH": 1433.0,
+        "ISABELLA SOLIS": 664.0,
+        "MIKE A TELLEZ": 1610.0,
+        "BEV COURTNEY": 492.0,
+        "ALEXANDER PAIGE FRESQUEZ": 106.0,
+        "JESUSITA DOLORES LUCERO": 426.0,
+        "WILLIAM BILL MATTIACE": 2725.0,
+        "KEN MIYAGISHIMA": 5172.0,
+        "EUGENIA (GINA) MONTOYA ORTEGA": 1147.0
+      },
+      "tallyResults": [
+        {
+          "eliminated": "ALEXANDER PAIGE FRESQUEZ"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "tally": {
+        "JORGE SANCHEZ": 220.0,
+        "GREGORY Z SMITH": 1459.0,
+        "ISABELLA SOLIS": 668.0,
+        "MIKE A TELLEZ": 1616.0,
+        "BEV COURTNEY": 495.0,
+        "JESUSITA DOLORES LUCERO": 436.0,
+        "WILLIAM BILL MATTIACE": 2732.0,
+        "KEN MIYAGISHIMA": 5196.0,
+        "EUGENIA (GINA) MONTOYA ORTEGA": 1158.0
+      },
+      "tallyResults": [
+        {
+          "eliminated": "JORGE SANCHEZ"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "tally": {
+        "GREGORY Z SMITH": 1492.0,
+        "ISABELLA SOLIS": 704.0,
+        "MIKE A TELLEZ": 1647.0,
+        "BEV COURTNEY": 502.0,
+        "JESUSITA DOLORES LUCERO": 442.0,
+        "WILLIAM BILL MATTIACE": 2747.0,
+        "KEN MIYAGISHIMA": 5232.0,
+        "EUGENIA (GINA) MONTOYA ORTEGA": 1178.0
+      },
+      "tallyResults": [
+        {
+          "eliminated": "JESUSITA DOLORES LUCERO"
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "tally": {
+        "GREGORY Z SMITH": 1535.0,
+        "ISABELLA SOLIS": 766.0,
+        "MIKE A TELLEZ": 1697.0,
+        "BEV COURTNEY": 539.0,
+        "WILLIAM BILL MATTIACE": 2829.0,
+        "KEN MIYAGISHIMA": 5284.0,
+        "EUGENIA (GINA) MONTOYA ORTEGA": 1240.0
+      },
+      "tallyResults": [
+        {
+          "eliminated": "BEV COURTNEY"
+        }
+      ]
+    },
+    {
+      "round": 5,
+      "tally": {
+        "GREGORY Z SMITH": 1566.0,
+        "ISABELLA SOLIS": 805.0,
+        "MIKE A TELLEZ": 1973.0,
+        "WILLIAM BILL MATTIACE": 2911.0,
+        "KEN MIYAGISHIMA": 5314.0,
+        "EUGENIA (GINA) MONTOYA ORTEGA": 1274.0
+      },
+      "tallyResults": [
+        {
+          "eliminated": "ISABELLA SOLIS"
+        }
+      ]
+    },
+    {
+      "round": 6,
+      "tally": {
+        "GREGORY Z SMITH": 1653.0,
+        "MIKE A TELLEZ": 2170.0,
+        "WILLIAM BILL MATTIACE": 3066.0,
+        "KEN MIYAGISHIMA": 5420.0,
+        "EUGENIA (GINA) MONTOYA ORTEGA": 1427.0
+      },
+      "tallyResults": [
+        {
+          "eliminated": "EUGENIA (GINA) MONTOYA ORTEGA"
+        }
+      ]
+    },
+    {
+      "round": 7,
+      "tally": {
+        "GREGORY Z SMITH": 1853.0,
+        "MIKE A TELLEZ": 2445.0,
+        "WILLIAM BILL MATTIACE": 3362.0,
+        "KEN MIYAGISHIMA": 5732.0
+      },
+      "tallyResults": [
+        {
+          "eliminated": "GREGORY Z SMITH"
+        }
+      ]
+    },
+    {
+      "round": 8,
+      "tally": {
+        "MIKE A TELLEZ": 2722.0,
+        "WILLIAM BILL MATTIACE": 3834.0,
+        "KEN MIYAGISHIMA": 6466.0
+      },
+      "tallyResults": [
+        {
+          "eliminated": "MIKE A TELLEZ"
+        }
+      ]
+    },
+    {
+      "round": 9,
+      "tally": {
+        "WILLIAM BILL MATTIACE": 5557.0,
+        "KEN MIYAGISHIMA": 6814.0
+      },
+      "tallyResults": [
+        {
+          "elected": "KEN MIYAGISHIMA"
+        }
+      ]
+    }
+  ]
+}

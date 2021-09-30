@@ -40,7 +40,7 @@ class Schema(abc.ABC):
         if utils.is_file_obj(filename_or_fileobj):
             return self._validate_file_object(filename_or_fileobj)
         if utils.is_filename(filename_or_fileobj):
-            with open(filename_or_fileobj, 'r') as file_object:
+            with open(filename_or_fileobj, 'rb') as file_object:
                 return self._validate_file_object(file_object)
         # Couldn't open the file at all
         self._last_error = TypeError("Couldn't open file")
@@ -86,7 +86,8 @@ class GenericJsonSchema(Schema):
     def _validate_file_object(self, file_object):
         """ Opens the file and runs :func:`~is_schema_valid` """
         try:
-            data = json.load(file_object)
+            file_bytes = file_object.read()
+            data = json.loads(file_bytes)
         except json.decoder.JSONDecodeError as error:
             self._last_error = error
             return False

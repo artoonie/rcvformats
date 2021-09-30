@@ -11,8 +11,7 @@ class DominionConverter(GenericGuessAtTransferConverter):
     These are .xlsx files
     """
     def _convert_file_object_to_ut(self, file_object):
-        tf = 'testdata/inputs/dominion/las-cruces-mayor.xlsx'
-        wb = load_workbook(filename=tf)  # note: somehow, readonly is 2x slower
+        wb = load_workbook(file_object)  # note: somehow, readonly is 2x slower
         self.sheet = wb.active
 
         config = self.parse_config()
@@ -180,13 +179,3 @@ class DominionConverter(GenericGuessAtTransferConverter):
         last_round_tally_results = data['results'][-1]['tallyResults']
         last_round_tally_results = [t for t in last_round_tally_results if 'eliminated' not in t]
         data['results'][-1]['tallyResults'] = last_round_tally_results
-
-
-tf1 = 'DominionTestFile.xlsx'
-tf2 = 'testdata/inputs/dominion/las-cruces-mayor.xlsx'
-
-converter = DominionConverter()
-output = converter.convert_to_ut_and_validate(tf2)
-
-with open('test.json', 'w') as f:
-    json.dump(output, f, indent=2)
