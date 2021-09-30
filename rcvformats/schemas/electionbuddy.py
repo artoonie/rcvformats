@@ -1,5 +1,5 @@
 """
-Loads the opavote schema
+Loads the election buddy schema
 """
 
 from rcvformats.common.electionbuddyparser import ElectionBuddyData

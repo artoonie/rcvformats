@@ -7,6 +7,7 @@ import json
 import nose
 
 from rcvformats.conversions import automatic
+from rcvformats.conversions import dominion
 from rcvformats.conversions import electionbuddy
 from rcvformats.conversions import opavote
 from rcvformats.conversions.ut_without_transfers import UTWithoutTransfersConverter
@@ -16,7 +17,7 @@ def _assert_conversion_correct(file_in, file_out, converter):
     """ Asserts that converter.convert_to_ut(file_in) = file_out """
     nose.tools.assert_dict_equal.__self__.maxDiff = None
     actual_data = converter.convert_to_ut_and_validate(file_in)
-    with open(file_out, 'r') as file_obj:
+    with open(file_out, 'r', encoding='utf-8') as file_obj:
         expected_data = json.load(file_obj)
     nose.tools.assert_dict_equal(actual_data, expected_data)
 
@@ -77,6 +78,14 @@ def test_electionbuddy_conversion_accurate():
     _assert_conversion_correct(file_in, file_out, converter)
 
 
+def test_dominion_conversion_accurate():
+    """ Converts dominion XLSX to the standard format """
+    file_in = 'testdata/inputs/dominion/las-cruces-mayor.xlsx'
+    file_out = 'testdata/conversions/from-dominion.json'
+    converter = dominion.DominionConverter()
+    _assert_conversion_correct(file_in, file_out, converter)
+
+
 def test_automatic_conversions_universal_tabulator():
     """ Tests that the automatic conversion works when given Universal Tabulator data """
     converter = automatic.AutomaticConverter()
@@ -87,7 +96,7 @@ def test_automatic_conversions_universal_tabulator():
         output_data = converter.convert_to_ut_and_validate(filepath)
 
         # Must be unchanged
-        with open(filepath, 'r') as input_file:
+        with open(filepath, 'r', encoding='utf-8') as input_file:
             input_data = json.load(input_file)
 
         nose.tools.assert_dict_equal(input_data, output_data)
@@ -97,6 +106,13 @@ def test_automatic_conversions_opavote():
     """ Tests that the automatic conversion works when given Opavote data """
     converter = opavote.OpavoteConverter()
     input_dir = 'testdata/inputs/opavote'
+    _assert_auto_gives_same_result_as(input_dir, converter)
+
+
+def test_automatic_conversions_dominion():
+    """ Tests that the automatic conversion works when given Dominion data """
+    converter = dominion.DominionConverter()
+    input_dir = 'testdata/inputs/dominion'
     _assert_auto_gives_same_result_as(input_dir, converter)
 
 

@@ -10,6 +10,7 @@ Currently supported input formats are:
 1. The Universal RCV Tabulator JSON format
 2. The Opavote JSON format
 3. The ElectionBuddy CSV format
+4. The Dominion XLSX format
 
 The standardized output format is the [Universal RCV Tabulator JSON](https://www.rcvresources.org/rcv-universal-tabulator). To understand this format, look at [examples](https://github.com/artoonie/rcvformats/tree/main/testdata/inputs/universal-tabulator) or [the jsonschema](https://github.com/artoonie/rcvformats/blob/main/rcvformats/jsonschemas/universaltabulator.schema.json).
 
@@ -62,6 +63,7 @@ except Exception as e:
 Valid converters are:
 ```python
 from rcvformats.converters.automatic import AutomaticConverter
+from rcvformats.conversions.dominion import DominionConverter
 from rcvformats.conversions.electionbuddy import ElectionBuddyConverter
 from rcvformats.conversions.opavote import OpavoteConverter
 ```
@@ -81,6 +83,7 @@ rcvformats validate -i <input-filename> -s <schema-type>
 ```
 
 Valid schema validators on the command line are 'eb' (for electionbuddy files), `ov` (for opavote files), `ut` (for universal tabulator files).
+Dominion does not have a schema validation currently.
 
 #### Python
 
@@ -127,10 +130,7 @@ except Exception as e:
 ```
 
 ## Upcoming plans
-1. Allow any format to be converted both to and from the Universal Tabulator format
-2. More unit tests
-3. Create both structure and data validations for the Universal Tabulator format
-4. Validation for both tabulated formats and cast vote records
+In addition to data normalization for RCV Summary formats, we would like similar functionality for cast vote records.
 
 ## Running test suite
-Run `nosetests` in the root directory
+Run `python3 -m nose` in the root directory, and `./scripts/lint.sh` to run the linter.

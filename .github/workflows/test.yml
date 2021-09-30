@@ -55,7 +55,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         python -m pip install twine wheel
-    - name: Lint with pylint
+    - name: Validate wheel can be built
       run: |
         ./scripts/validate_wheel.sh
   make-docs:
@@ -71,7 +71,7 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install sphinx m2r recommonmark
         pip install -r requirements.txt
-    - name: Lint with pylint
+    - name: Make docs
       run: |
         cd docs && make html
   tag-and-release:

@@ -7,10 +7,9 @@ loop through all schemas which will be needlessly slow.
 import json
 
 from rcvformats.conversions.base import CouldNotConvertException
+from rcvformats.conversions.dominion import DominionConverter
 from rcvformats.conversions.electionbuddy import ElectionBuddyConverter
 from rcvformats.conversions.opavote import OpavoteConverter
-from rcvformats.schemas.electionbuddy import SchemaV0 as ElectionBuddySchema
-from rcvformats.schemas.opavote import SchemaV1_0 as OpavoteSchema
 from rcvformats.conversions.base import Converter
 
 
@@ -19,9 +18,10 @@ class AutomaticConverter(Converter):
 
     def __init__(self):
         # In order of likelihood of a hit - just my guess
-        self.additional_schemas = [
-            (ElectionBuddySchema(), ElectionBuddyConverter),
-            (OpavoteSchema(), OpavoteConverter)
+        self.converters = [
+            DominionConverter,
+            ElectionBuddyConverter,
+            OpavoteConverter
         ]
 
         super().__init__()
@@ -32,17 +32,16 @@ class AutomaticConverter(Converter):
             file_object.seek(0)
             return json.load(file_object)
 
-        # Otherwise, loop through each schema, and if it matches, run the converter
-        for schema, converter in self.additional_schemas:
+        # Otherwise, try each converter - skipping schemas for speed
+        for converter in self.converters:
             file_object.seek(0)
-            matches_schema = schema.validate(file_object)
-            if matches_schema:
-                file_object.seek(0)
+            try:
                 return converter().convert_to_ut(file_object)
+            except CouldNotConvertException:
+                continue
 
         # If it failed, accumulate all errors from schemas
-        err = CouldNotConvertException("Could not find a compatible parser")
-        err.args += (self.ut_schema.last_error(),)
-        for schema, _ in self.additional_schemas:
-            err.args += (schema.last_error(),)
-        raise err
+        error_message = "When trying to parse as the Universal Tabulator schema, " +\
+                        f"received error: \"{str(self.ut_schema.last_error())}\". " +\
+            "Further, it did not match any other known format."
+        raise CouldNotConvertException(error_message)

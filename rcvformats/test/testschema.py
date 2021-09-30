@@ -23,13 +23,13 @@ def _modify_json_with(json_filename, modifier_func):
     updates the json file and returns a Tempfile holding the new data
     """
     # Update the sidecar data
-    with open(json_filename, 'r+') as file_obj:
+    with open(json_filename, 'r+', encoding='utf-8') as file_obj:
         data = json.load(file_obj)
         modifier_func(data)
 
     # Write it to a tempfile
     modified_json_tempfile = tempfile.NamedTemporaryFile()  # pylint: disable=consider-using-with
-    with open(modified_json_tempfile.name, 'w') as file_obj:
+    with open(modified_json_tempfile.name, 'w', encoding='utf-8') as file_obj:
         json.dump(data, file_obj)
     return modified_json_tempfile
 
