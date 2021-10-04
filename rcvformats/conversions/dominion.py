@@ -17,9 +17,8 @@ class DominionConverter(GenericGuessAtTransferConverter):
     # Some constants
     ROUND_LABELS_ROW = 32
     FIRST_CANDIDATE_ON_ROW = 34
-    TITLE_CELL = 'A7'
+    TITLE_CELL = 'A12'
     DATE_CELL = 'A9'
-    SEAT_TITLE_CELL = 'A12'
     ROW_AFTER_LAST_CANDIDATE_FOR_INACTIVE_BALLOTS = 4
     ROW_AFTER_LAST_CANDIDATE_FOR_THRESHOLD = 5
 
@@ -79,12 +78,10 @@ class DominionConverter(GenericGuessAtTransferConverter):
         title = self.sheet[self.TITLE_CELL].value
         date_with_time = self.sheet[self.DATE_CELL].value
         date = str(date_with_time.date())
-        seat = self.sheet[self.SEAT_TITLE_CELL].value
 
         config = {
             'contest': title,
-            'date': date,
-            'office': seat
+            'date': date
         }
         return config
 
