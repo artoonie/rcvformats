@@ -15,7 +15,6 @@ class DominionConverter(GenericGuessAtTransferConverter):
     """
 
     # Define constants
-    TITLE_CELL = 'A7'
     DATE_CELL = 'A9'
 
     class RoundInfo:  # pylint: disable=too-few-public-methods
@@ -149,13 +148,12 @@ class DominionConverter(GenericGuessAtTransferConverter):
         """
         Returns the URCV config format
         """
-        title = self.sheet[self.TITLE_CELL].value
         date_with_time = self.sheet[self.DATE_CELL].value
         date = str(date_with_time.date())
         seat = self.sheet.cell(self.row_constants.seat_title, 1).value
 
         config = {
-            'contest': title,
+            'contest': seat,
             'date': date,
             'office': seat
         }

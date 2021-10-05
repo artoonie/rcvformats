@@ -1,8 +1,8 @@
 {
     "config": {
-        "contest": "Dona Ana County",
-        "date": "2019-11-05",
         "office": "MAYOR CITY OF LAS CRUCES",
+        "contest": "MAYOR CITY OF LAS CRUCES",
+        "date": "2019-11-05",
         "threshold": 6186.0
     },
     "results": [
