@@ -25,7 +25,9 @@ def _assert_conversion_correct(file_in, file_out, converter):
 def _files_in_dir(input_dir):
     """ Yields all CSV and json files in dir """
     for filename in os.listdir(input_dir):
-        if not filename.endswith('.json') and not filename.endswith('.csv'):
+        if not filename.endswith('.json') and \
+                not filename.endswith('.csv') and \
+                not filename.endswith('.xlsx'):
             continue
         yield filename
 

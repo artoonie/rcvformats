@@ -14,14 +14,9 @@ class DominionConverter(GenericGuessAtTransferConverter):
     These are .xlsx files
     """
 
-    # Some constants
-    ROUND_LABELS_ROW = 32
-    FIRST_CANDIDATE_ON_ROW = 34
+    # Define constants
     TITLE_CELL = 'A7'
     DATE_CELL = 'A9'
-    SEAT_TITLE_CELL = 'A12'
-    ROW_AFTER_LAST_CANDIDATE_FOR_INACTIVE_BALLOTS = 4
-    ROW_AFTER_LAST_CANDIDATE_FOR_THRESHOLD = 5
 
     class RoundInfo:  # pylint: disable=too-few-public-methods
         """
@@ -32,6 +27,87 @@ class DominionConverter(GenericGuessAtTransferConverter):
         round_num = None
         column = None
 
+    class RowConstants():
+        """
+        Data for the row number that various items are on
+        """
+        # Define constants
+        # the -12 is because New Mexico files have 12 rows of headers,
+        # so the first number is the actual row number, then we subtract num_header_rows,
+        # just for readability.
+        SEAT_TITLE_NUM_ROWS_AFTER_HEADER = 12 - 12
+        ROUND_LABELS_NUM_ROWS_AFTER_HEADER = 32 - 12
+        FIRST_CANDIDATE_NUM_ROWS_AFTER_HEADER = 34 - 12
+        ROW_AFTER_LAST_CANDIDATE_FOR_INACTIVE_BALLOTS = 4
+        ROW_AFTER_LAST_CANDIDATE_FOR_THRESHOLD = 5
+
+        def __init__(self):
+            # The row that includes the seat title in column 1
+            self.seat_title = None
+
+            # The row that includes the round labels in the primary table
+            self.round_label = None
+
+            # The row that includes the candidate names in column 1
+            self.first_candidate = None
+
+            # Row that has the threshold at each round
+            self.threshold = None
+
+            # Row that has the number of inactive ("non transferrable") ballots at each round
+            self.inactive_ballots = None
+
+        def find_rows_before_summary_table(self, sheet):
+            """
+            Fills in values for rows before the summary table
+            """
+            offset = self._count_num_header_rows(sheet)
+            self.round_label = self.ROUND_LABELS_NUM_ROWS_AFTER_HEADER + offset
+            self.first_candidate = self.FIRST_CANDIDATE_NUM_ROWS_AFTER_HEADER + offset
+            self.seat_title = self.SEAT_TITLE_NUM_ROWS_AFTER_HEADER + offset
+
+        def find_rows_after_summary_table(self, sheet, num_candidates):
+            """
+            Fills in values for rows after the summary table,
+            which requires needing to know the number of candidates
+            """
+            self._find_row_of_threshold(sheet, num_candidates)
+            self._find_row_of_inactive_ballots(sheet, num_candidates)
+
+        @classmethod
+        def _count_num_header_rows(cls, sheet):
+            """
+            The number of header rows can vary.
+            Looks for the first left-aligned row, which is row 12 or 13 in all data
+            we've seen.
+            """
+            min_header_rows = 6
+            max_header_rows = 50
+            for row in range(min_header_rows, max_header_rows):
+                if sheet.cell(row, 1).alignment.horizontal == 'general':
+                    return row
+            raise Exception("Could not find the end of the headers")
+
+        def _find_row_of_threshold(self, sheet, num_candidates):
+            """
+            Returns row number labeled "Threshold"
+            """
+            row = self.first_candidate
+            row += num_candidates
+            row += self.ROW_AFTER_LAST_CANDIDATE_FOR_THRESHOLD
+            assert sheet.cell(row, 1).value == "Threshold"
+            self.threshold = row
+
+        def _find_row_of_inactive_ballots(self, sheet, num_candidates):
+            """
+            Returns row number labeled "Non-Transferrable Total"
+            """
+            row = self.first_candidate
+            row += num_candidates
+            row += self.ROW_AFTER_LAST_CANDIDATE_FOR_INACTIVE_BALLOTS
+            assert sheet.cell(row, 1).value == "Non Transferable Total"
+            self.inactive_ballots = row
+
     def __init__(self):
         super().__init__()
 
@@ -40,30 +116,27 @@ class DominionConverter(GenericGuessAtTransferConverter):
         # The loaded spreadsheet
         self.sheet = None
 
+        # Row constants
+        self.row_constants = self.RowConstants()
+
         # names of each candidate
         self.candidates = None
 
         # list of RoundInfo, one per round
         self.data_per_round = None
 
-        # Row that has the threshold at each round
-        self.row_for_threshold = None
-
-        # Row that has the number of inactive ("non transferrable") ballots at each round
-        self.row_for_inactive_ballots = None
-
     def _convert_file_object_to_ut(self, file_object):
         workbook = load_workbook(file_object)  # note: somehow, readonly is 2x slower
         self.sheet = workbook.active
 
-        config = self._parse_config()
+        self.row_constants.find_rows_before_summary_table(self.sheet)
         self.candidates = self._parse_candidates()
-        self.row_for_threshold = self._get_row_of_threshold()
-        self.row_for_inactive_ballots = self._get_row_of_inactive_ballots()
+        self.row_constants.find_rows_after_summary_table(self.sheet, len(self.candidates))
+
         self.data_per_round = self._parse_rounds()
 
+        config = self._parse_config()
         results = self._get_vote_counts_per_candidate()
-
         urcvt_data = {'config': config, 'results': results}
 
         workbook.close()
@@ -79,7 +152,7 @@ class DominionConverter(GenericGuessAtTransferConverter):
         title = self.sheet[self.TITLE_CELL].value
         date_with_time = self.sheet[self.DATE_CELL].value
         date = str(date_with_time.date())
-        seat = self.sheet[self.SEAT_TITLE_CELL].value
+        seat = self.sheet.cell(self.row_constants.seat_title, 1).value
 
         config = {
             'contest': title,
@@ -101,7 +174,7 @@ class DominionConverter(GenericGuessAtTransferConverter):
         data_per_round = []
         max_cols = 1500
         while True:
-            cell = self.sheet.cell(self.ROUND_LABELS_ROW, col)
+            cell = self.sheet.cell(self.row_constants.round_label, col)
             value = cell.value
 
             col += 1
@@ -149,7 +222,7 @@ class DominionConverter(GenericGuessAtTransferConverter):
         end_of_candidates_marker = 'Continuing Ballots Total'
         max_num_rows = 500
         candidate_names = []
-        row = self.FIRST_CANDIDATE_ON_ROW
+        row = self.row_constants.first_candidate
         while True:
             candidate_name = self.sheet['A' + str(row)].value
             if candidate_name == end_of_candidates_marker:
@@ -163,26 +236,6 @@ class DominionConverter(GenericGuessAtTransferConverter):
             row += 1
         assert len(candidate_names) >= 1
         return candidate_names
-
-    def _get_row_of_threshold(self):
-        """
-        Returns row number labeled "Threshold"
-        """
-        row = self.FIRST_CANDIDATE_ON_ROW
-        row += len(self.candidates)
-        row += self.ROW_AFTER_LAST_CANDIDATE_FOR_THRESHOLD
-        assert self.sheet.cell(row, 1).value == "Threshold"
-        return row
-
-    def _get_row_of_inactive_ballots(self):
-        """
-        Returns row number labeled "Non-Transferrable Total"
-        """
-        row = self.FIRST_CANDIDATE_ON_ROW
-        row += len(self.candidates)
-        row += self.ROW_AFTER_LAST_CANDIDATE_FOR_INACTIVE_BALLOTS
-        assert self.sheet.cell(row, 1).value == "Non Transferable Total"
-        return row
 
     @classmethod
     def _is_eliminated_color(cls, color):
@@ -206,7 +259,7 @@ class DominionConverter(GenericGuessAtTransferConverter):
 
     def _parse_tally_for_round_at_column(self, col, eliminated_names):
         """ Creates a 'tally' and 'tallyResults' struct for the given round """
-        starting_candidate_row = self.FIRST_CANDIDATE_ON_ROW
+        starting_candidate_row = self.row_constants.first_candidate
         tally = {}
         tally_results = []
         for i, name in enumerate(self.candidates):
@@ -231,7 +284,7 @@ class DominionConverter(GenericGuessAtTransferConverter):
                     assert bg_color == '00000000'
 
         # Add inactive ballots
-        tally['Inactive Ballots'] = self.sheet.cell(self.row_for_inactive_ballots, col).value
+        tally['Inactive Ballots'] = self.sheet.cell(self.row_constants.inactive_ballots, col).value
 
         return tally, tally_results, eliminated_names
 
@@ -265,5 +318,5 @@ class DominionConverter(GenericGuessAtTransferConverter):
         Which is also just listed on the table of per-round info
         """
         last_round_col = self.data_per_round[-1].column
-        threshold = self.sheet.cell(self.row_for_threshold, last_round_col).value
+        threshold = self.sheet.cell(self.row_constants.threshold, last_round_col).value
         data['config']['threshold'] = threshold
