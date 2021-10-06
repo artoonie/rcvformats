@@ -83,8 +83,15 @@ class DominionConverter(GenericGuessAtTransferConverter):
             min_header_rows = 6
             max_header_rows = 50
             for row in range(min_header_rows, max_header_rows):
-                if sheet.cell(row, 1).alignment.horizontal == 'general':
-                    return row
+                # Empty rows are merged rows - ignore them
+                if sheet.cell(row, 1).value is None:
+                    continue
+
+                # Center-aligned rows are header rows - keep going
+                if sheet.cell(row, 1).alignment.horizontal == 'center':
+                    continue
+
+                return row
             raise Exception("Could not find the end of the headers")
 
         def _find_row_of_threshold(self, sheet, num_candidates):
