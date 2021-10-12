@@ -37,8 +37,7 @@ class DominionConverter(GenericGuessAtTransferConverter):
         SEAT_TITLE_NUM_ROWS_AFTER_HEADER = 12 - 12
         ROUND_LABELS_NUM_ROWS_AFTER_HEADER = 32 - 12
         FIRST_CANDIDATE_NUM_ROWS_AFTER_HEADER = 34 - 12
-        ROW_AFTER_LAST_CANDIDATE_FOR_INACTIVE_BALLOTS = 4
-        ROW_AFTER_LAST_CANDIDATE_FOR_THRESHOLD = 5
+        ROW_AFTER_INACTIVE_FOR_THRESHOLD = 1
 
         def __init__(self):
             # The row that includes the seat title in column 1
@@ -70,8 +69,8 @@ class DominionConverter(GenericGuessAtTransferConverter):
             Fills in values for rows after the summary table,
             which requires needing to know the number of candidates
             """
-            self._find_row_of_threshold(sheet, num_candidates)
-            self._find_row_of_inactive_ballots(sheet, num_candidates)
+            self.inactive_ballots = self._find_row_of_inactive_ballots(sheet, num_candidates)
+            self.threshold = self._find_row_of_threshold(sheet, self.inactive_ballots)
 
         @classmethod
         def _count_num_header_rows(cls, sheet):
@@ -94,25 +93,27 @@ class DominionConverter(GenericGuessAtTransferConverter):
                 return row
             raise Exception("Could not find the end of the headers")
 
-        def _find_row_of_threshold(self, sheet, num_candidates):
-            """
-            Returns row number labeled "Threshold"
-            """
-            row = self.first_candidate
-            row += num_candidates
-            row += self.ROW_AFTER_LAST_CANDIDATE_FOR_THRESHOLD
-            assert sheet.cell(row, 1).value == "Threshold"
-            self.threshold = row
-
         def _find_row_of_inactive_ballots(self, sheet, num_candidates):
             """
             Returns row number labeled "Non-Transferrable Total"
             """
             row = self.first_candidate
             row += num_candidates
-            row += self.ROW_AFTER_LAST_CANDIDATE_FOR_INACTIVE_BALLOTS
-            assert sheet.cell(row, 1).value == "Non Transferable Total"
-            self.inactive_ballots = row
+
+            min_num_rows = 1
+            max_num_rows = 6
+            for row in range(row + min_num_rows, row + max_num_rows):
+                if sheet.cell(row, 1).value == "Non Transferable Total":
+                    return row
+            raise Exception("Could not find the end of the non-transferable rows")
+
+        def _find_row_of_threshold(self, sheet, inactive_row):
+            """
+            Returns row number labeled "Threshold"
+            """
+            row = inactive_row + self.ROW_AFTER_INACTIVE_FOR_THRESHOLD
+            assert sheet.cell(row, 1).value == "Threshold"
+            return row
 
     def __init__(self):
         super().__init__()
