@@ -23,7 +23,10 @@ class UTWithoutTransfersConverter(GenericGuessAtTransferConverter):
 
     def _convert_file_object_to_ut(self, file_object):
         data = json.load(file_object)
+        return self.fill_in_tally_data(data)
 
+    def fill_in_tally_data(self, data):
+        """ Given data in the UT format, fill in the tallyResults """
         self._convert_tally_string_to_decimal(data['results'])
         self._fill_in_tallyresults(data['results'])
         return data
