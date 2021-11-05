@@ -10,6 +10,7 @@ from rcvformats.conversions.base import CouldNotConvertException
 from rcvformats.conversions.dominion import DominionConverter
 from rcvformats.conversions.electionbuddy import ElectionBuddyConverter
 from rcvformats.conversions.opavote import OpavoteConverter
+from rcvformats.conversions.ut_without_transfers import UTWithoutTransfersConverter
 from rcvformats.conversions.base import Converter
 
 
@@ -36,7 +37,9 @@ class AutomaticConverter(Converter):
         for converter in self.converters:
             file_object.seek(0)
             try:
-                return converter().convert_to_ut(file_object)
+                data = converter().convert_to_ut(file_object)
+                converter = UTWithoutTransfersConverter(allow_guessing=False)
+                return converter.fill_in_tally_data(data)
             except CouldNotConvertException:
                 continue
 

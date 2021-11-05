@@ -35,14 +35,16 @@ def _files_in_dir(input_dir):
 def _assert_auto_gives_same_result_as(input_dir, direct_converter):
     """
     Asserts that the AutomaticConverter creates the same results as the provided one
-    for every file in the provided directory
+    for every file in the provided directory, plus a transfer dict
     """
     auto_converter = automatic.AutomaticConverter()
+    add_transfer_converter = UTWithoutTransfersConverter(allow_guessing=False)
 
     for filename in _files_in_dir(input_dir):
         filepath = os.path.join(input_dir, filename)
         auto_data = auto_converter.convert_to_ut_and_validate(filepath)
-        expected_data = direct_converter.convert_to_ut_and_validate(filepath)
+        expected_data_without_xfer = direct_converter.convert_to_ut_and_validate(filepath)
+        expected_data = add_transfer_converter.fill_in_tally_data(expected_data_without_xfer)
 
         nose.tools.assert_dict_equal(auto_data, expected_data)
 
