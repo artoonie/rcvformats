@@ -14,9 +14,9 @@ class SchemaV0(Schema):
     def version(self):
         return 'unversioned:0'
 
-    def _validate_file_object(self, file_object):
+    def _validate_data(self, data):
         try:
-            ElectionBuddyData(file_object)
+            ElectionBuddyData(data)
             return True
         except Exception as exception:  # pylint:disable=broad-except
             self._last_error = exception

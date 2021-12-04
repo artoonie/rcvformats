@@ -17,4 +17,7 @@ def is_file_obj(filename_or_fileobj):
 
 def is_filename(filename_or_fileobj):
     """ Is the given argument a filename? """
-    return os.path.isfile(filename_or_fileobj)
+    try:
+        return os.path.isfile(filename_or_fileobj)
+    except TypeError:
+        return False
