@@ -22,6 +22,28 @@ class SchemaV0(GenericJsonSchema):
         """
         self.check_last_round_eliminations(data)
         self.check_candidate_leaves_after_elimination(data)
+        self.check_unique_candidate_names(data)
+        self.check_no_empty_candidate_names(data)
+
+    @classmethod
+    def check_unique_candidate_names(cls, data):
+        """
+        All candidate names must be unique
+        """
+        first_round_tally = data['results'][0]['tally']
+        names = first_round_tally.keys()
+        if len(set(names)) != len(names):
+            raise DataError("All candidate names must be unique.")
+
+    @classmethod
+    def check_no_empty_candidate_names(cls, data):
+        """
+        All candidate names must be unique
+        """
+        first_round_tally = data['results'][0]['tally']
+        names = first_round_tally.keys()
+        if any(n == "" for n in names):
+            raise DataError("All candidates must have non-empty names.")
 
     @classmethod
     def check_last_round_eliminations(cls, data):

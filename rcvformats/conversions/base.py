@@ -63,7 +63,7 @@ class Converter(abc.ABC):
         except CouldNotConvertException as known_error:
             raise known_error
         except Exception as unknown_error:
-            raise CouldNotConvertException from unknown_error
+            raise CouldNotConvertException(str(unknown_error)) from unknown_error
 
         raise CouldNotOpenFileException(f"Could not open {filename_or_fileobj}")
 

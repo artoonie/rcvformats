@@ -28,7 +28,7 @@ def _modify_json_with(json_filename, modifier_func):
         modifier_func(data)
 
     # Write it to a tempfile
-    modified_json_tempfile = tempfile.NamedTemporaryFile()
+    modified_json_tempfile = tempfile.NamedTemporaryFile()  # pylint: disable=consider-using-with
     with open(modified_json_tempfile.name, 'w', encoding='utf-8') as file_obj:
         json.dump(data, file_obj)
     return modified_json_tempfile
@@ -73,7 +73,8 @@ def test_can_pass_raw_json():
     Verifies that raw JSON data can be passed:
     filelike objects or filenames are not mandatory
     """
-    with open('testdata/inputs/universal-tabulator/one-round.json', 'r') as fileobj:
+    filename = 'testdata/inputs/universal-tabulator/one-round.json'
+    with open(filename, 'r', encoding='utf-8') as fileobj:
         data = json.load(fileobj)
     schema = universaltabulator.SchemaV0()
     assert schema.validate(data)
