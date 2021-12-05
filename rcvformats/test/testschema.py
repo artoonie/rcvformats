@@ -66,3 +66,15 @@ def test_threshold_is_optional():
                                          lambda d: d['config'].pop('threshold'))
     schema = universaltabulator.SchemaV0()
     assert schema.validate(badjson_tempfile.name)
+
+
+def test_can_pass_raw_json():
+    """
+    Verifies that raw JSON data can be passed:
+    filelike objects or filenames are not mandatory
+    """
+    filename = 'testdata/inputs/universal-tabulator/one-round.json'
+    with open(filename, 'r', encoding='utf-8') as fileobj:
+        data = json.load(fileobj)
+    schema = universaltabulator.SchemaV0()
+    assert schema.validate(data)

@@ -31,26 +31,30 @@ class Schema(abc.ABC):
         :return: A string represting the version number
         """
 
-    def validate(self, filename_or_fileobj):
+    def validate(self, data):
         """
         Validates that the file matches the expected schema
 
-        :param filename_or_fileobj: The JSON filename or file object for the tabulated results
+        :param data: The JSON filename, file object, or JSON data for the tabulated results
         :return: whether or not the validation failed
         """
-        if utils.is_file_obj(filename_or_fileobj):
-            return self._validate_file_object(filename_or_fileobj)
-        if utils.is_filename(filename_or_fileobj):
-            with open(filename_or_fileobj, 'rb') as file_object:
-                return self._validate_file_object(file_object)
+        if utils.is_file_obj(data):
+            return self._validate_data(data)
+        if isinstance(data, dict):
+            return self._validate_data(data)
+        if utils.is_filename(data):
+            with open(data, 'rb') as file_object:
+                return self._validate_data(file_object)
+
         # Couldn't open the file at all
         self._last_error = TypeError("Couldn't open file")
         return False
 
     @abc.abstractmethod
-    def _validate_file_object(self, file_object):
+    def _validate_data(self, data):
         """
         Implements the bulk of func:`~validate`
+        Should accept either a filelike object or raw, loaded data
         """
 
     def last_error(self):
@@ -84,14 +88,18 @@ class GenericJsonSchema(Schema):
     def _get_jsonschema_directory(cls):
         return os.path.join(os.path.dirname(__file__), '..', 'jsonschemas')
 
-    def _validate_file_object(self, file_object):
-        """ Opens the file and runs :func:`~is_schema_valid` """
-        try:
-            file_bytes = file_object.read()
-            data = json.loads(file_bytes)
-        except (json.decoder.JSONDecodeError, UnicodeDecodeError) as error:
-            self._last_error = error
-            return False
+    def _validate_data(self, data):
+        """
+        Opens the file and runs :func:`~is_schema_valid`
+        if is_filelike, opens the file, otherwise, the data should be a python dictionary
+        """
+        if not isinstance(data, dict):
+            try:
+                file_bytes = data.read()
+                data = json.loads(file_bytes)
+            except (json.decoder.JSONDecodeError, UnicodeDecodeError) as error:
+                self._last_error = error
+                return False
 
         return self.validate_schema_and_logic(data)
 
