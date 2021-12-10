@@ -49,8 +49,8 @@ class DominionConverter(GenericGuessAtTransferConverter):
             # The row that includes the candidate names in column 1
             self.first_candidate = None
 
-            # Row that has the threshold at each round
-            self.threshold = None
+            # Row that has the threshold at each round, if one is provided at all
+            self.maybe_threshold = None
 
             # Row that has the number of inactive ("non transferrable") ballots at each round
             self.inactive_ballots = None
@@ -70,7 +70,7 @@ class DominionConverter(GenericGuessAtTransferConverter):
             which requires needing to know the number of candidates
             """
             self.inactive_ballots = self._find_row_of_inactive_ballots(sheet, num_candidates)
-            self.threshold = self._find_row_of_threshold(sheet, self.inactive_ballots)
+            self.maybe_threshold = self._try_to_find_row_of_threshold(sheet, self.inactive_ballots)
 
         @classmethod
         def _count_num_header_rows(cls, sheet):
@@ -79,7 +79,7 @@ class DominionConverter(GenericGuessAtTransferConverter):
             Looks for the first left-aligned row, which is row 12 or 13 in all data
             we've seen.
             """
-            min_header_rows = 6
+            min_header_rows = 3
             max_header_rows = 50
             for row in range(min_header_rows, max_header_rows):
                 # Empty rows are merged rows - ignore them
@@ -107,13 +107,14 @@ class DominionConverter(GenericGuessAtTransferConverter):
                     return row
             raise Exception("Could not find the end of the non-transferable rows")
 
-        def _find_row_of_threshold(self, sheet, inactive_row):
+        def _try_to_find_row_of_threshold(self, sheet, inactive_row):
             """
             Returns row number labeled "Threshold"
             """
             row = inactive_row + self.ROW_AFTER_INACTIVE_FOR_THRESHOLD
-            assert sheet.cell(row, 1).value == "Threshold"
-            return row
+            if sheet.cell(row, 1).value == "Threshold":
+                return row
+            return None
 
     def __init__(self):
         super().__init__()
@@ -156,15 +157,21 @@ class DominionConverter(GenericGuessAtTransferConverter):
         """
         Returns the URCV config format
         """
-        date_with_time = self.sheet[self.DATE_CELL].value
-        date = str(date_with_time.date())
-        seat = self.sheet.cell(self.row_constants.seat_title, 1).value
+        config = {}
 
-        config = {
-            'contest': seat,
-            'date': date,
-            'office': seat
-        }
+        # First, try to parse the date
+        date_with_time = self.sheet[self.DATE_CELL].value
+        try:
+            config['date'] = str(date_with_time.date())
+        except AttributeError:
+            # No date - as per the SF final short report
+            pass
+
+        # Then, grab the required title
+        seat = self.sheet.cell(self.row_constants.seat_title, 1).value
+        config['contest'] = seat
+        config['office'] = seat
+
         return config
 
     def _parse_rounds(self):
@@ -324,5 +331,7 @@ class DominionConverter(GenericGuessAtTransferConverter):
         Which is also just listed on the table of per-round info
         """
         last_round_col = self.data_per_round[-1].column
-        threshold = self.sheet.cell(self.row_constants.threshold, last_round_col).value
-        data['config']['threshold'] = threshold
+        maybe_threshold_row = self.row_constants.maybe_threshold
+        if maybe_threshold_row is not None:
+            threshold = self.sheet.cell(maybe_threshold_row, last_round_col).value
+            data['config']['threshold'] = threshold

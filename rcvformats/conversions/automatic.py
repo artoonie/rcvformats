@@ -34,17 +34,20 @@ class AutomaticConverter(Converter):
             return json.load(file_object)
 
         # Otherwise, try each converter - skipping schemas for speed
-        for converter in self.converters:
+        additional_errors = []
+        for converterType in self.converters:
             file_object.seek(0)
             try:
-                data = converter().convert_to_ut(file_object)
+                data = converterType().convert_to_ut(file_object)
                 converter = UTWithoutTransfersConverter(allow_guessing=False)
                 return converter.fill_in_tally_data(data)
-            except CouldNotConvertException:
+            except CouldNotConvertException as exception:
+                additional_errors.append(converterType.__name__ + ":" + str(exception))
                 continue
 
         # If it failed, accumulate all errors from schemas
         error_message = "When trying to parse as the Universal Tabulator schema, " +\
-                        f"received error: \"{str(self.ut_schema.last_error())}\". " +\
-            "Further, it did not match any other known format."
+            f"received error: \"{str(self.ut_schema.last_error())}\". " +\
+            "Further, it did not match any other known format. Additional errors: \n\n" +\
+            '\n\n'.join(additional_errors)
         raise CouldNotConvertException(error_message)
