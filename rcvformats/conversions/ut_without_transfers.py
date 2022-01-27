@@ -21,9 +21,12 @@ class UTWithoutTransfersConverter(GenericGuessAtTransferConverter):
         self.allow_guessing = allow_guessing
         super().__init__()
 
+    def _convert_json_to_ut(self, json_data):
+        return self.fill_in_tally_data(json_data)
+
     def _convert_file_object_to_ut(self, file_object):
         data = json.load(file_object)
-        return self.fill_in_tally_data(data)
+        return self._convert_json_to_ut(data)
 
     def fill_in_tally_data(self, data):
         """ Given data in the UT format, fill in the tallyResults """
