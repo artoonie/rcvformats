@@ -172,3 +172,14 @@ def test_add_xfer_with_fake_data():
     with_transfers = converter.convert_to_ut(input_filename)
     assert _does_all_single_elim_have_transfer_data(with_transfers)
     assert _does_all_batch_elim_have_transfer_data(with_transfers)
+
+
+def test_add_xfer_accepts_json():
+    """ Tests that raw JSON data can be passed in """
+    converter = UTWithoutTransfersConverter(allow_guessing=False)
+    input_filename = 'testdata/inputs/ut-without-transfers/nyc-batch-elim.json'
+    with open(input_filename, 'r', encoding='utf-8') as file_obj:
+        data = json.load(file_obj)
+        with_transfers = converter.convert_to_ut(data)
+    assert _does_all_single_elim_have_transfer_data(with_transfers)
+    assert not _does_all_batch_elim_have_transfer_data(with_transfers)

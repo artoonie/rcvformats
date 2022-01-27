@@ -43,11 +43,11 @@ class Converter(abc.ABC):
 
         return ut_format
 
-    def convert_to_ut(self, filename_or_fileobj):
+    def convert_to_ut(self, data):
         """
         Parses the file and returns the parsed data
 
-        :param filename: A File object or filename
+        :param data: A File object, filename, or json data. Not all converters support JSON.
         :return: The Universal Tabulator representation of this data.\
                  Call :func:`~convert_to_ut_and_validate` to guarantee that \
                  it matches the Universal Tabulator schema.
@@ -55,17 +55,25 @@ class Converter(abc.ABC):
         :raises CouldNotOpenFileException: If the file couldn't be opened
         """
         try:
-            if utils.is_file_obj(filename_or_fileobj):
-                return self._convert_file_object_to_ut(filename_or_fileobj)
-            if utils.is_filename(filename_or_fileobj):
-                with open(filename_or_fileobj, 'rb') as file_object:
+            if isinstance(data, dict):
+                return self._convert_json_to_ut(data)
+            if utils.is_file_obj(data):
+                return self._convert_file_object_to_ut(data)
+            if utils.is_filename(data):
+                with open(data, 'rb') as file_object:
                     return self._convert_file_object_to_ut(file_object)
         except CouldNotConvertException as known_error:
             raise known_error
         except Exception as unknown_error:
             raise CouldNotConvertException(str(unknown_error)) from unknown_error
 
-        raise CouldNotOpenFileException(f"Could not open {filename_or_fileobj}")
+        raise CouldNotOpenFileException(f"Could not open {data}")
+
+    def _convert_json_to_ut(self, json_data):
+        """
+        Optional. Only some converters support JSON.
+        """
+        raise NotImplementedError("This converter does not support JSON data.")
 
     @abc.abstractmethod
     def _convert_file_object_to_ut(self, file_object):
