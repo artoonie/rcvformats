@@ -10,7 +10,9 @@ import sys
 
 from enum import Enum
 
-from rcvformats import schemas
+from rcvformats.schemas import electionbuddy
+from rcvformats.schemas import universaltabulator
+from rcvformats.schemas import opavote
 from rcvformats.conversions.automatic import AutomaticConverter
 from rcvformats.conversions.ut_without_transfers import UTWithoutTransfersConverter
 
@@ -19,7 +21,8 @@ class FormatEnum(Enum):
     """ Enum for validator, and perhaps eventually converter. """
     UT = 'ut'
     EB = 'eb'
-    OV = 'ov'
+    OV10 = 'ov10'
+    OV11 = 'ov11'
 
     def __str__(self):
         return str(self.value)
@@ -35,11 +38,13 @@ def convert(input_filename, output_filename):
 def validate(input_filename, schema):
     """ validates input_filename with schema """
     if schema == FormatEnum.UT:
-        schema = schemas.universaltabulator.SchemaV0()
+        schema = universaltabulator.SchemaV0()
     elif schema == FormatEnum.EB:
-        schema = schemas.electionbuddy.SchemaV0()
-    elif schema == FormatEnum.OV:
-        schema = schemas.opavote.SchemaV1_0()
+        schema = electionbuddy.SchemaV0()
+    elif schema == FormatEnum.OV10:
+        schema = opavote.SchemaV1_0()
+    elif schema == FormatEnum.OV11:
+        schema = opavote.SchemaV1_1()
 
     is_valid = schema.validate(input_filename)
     if is_valid:

@@ -88,16 +88,25 @@ class OpavoteConverter(GenericGuessAtTransferConverter):
     def _fill_in_tallyresults(cls, rounds, candidate_names, ut_rounds):
         """ Fill out rounds['tallyResults'] based on rounds['tally'] """
         already_eliminated = set()
+        already_elected = set()
         for round_i, _ in enumerate(rounds):
             # Get who was elected and eliminated
             eliminated_names = cls._get_eliminated_names(rounds, candidate_names, round_i)
             elected_names = cls._get_elected_names(rounds, candidate_names, round_i)
-            # Opavote accumulates eliminated candidates. Clean that up.
+
+            # Opavote accumulates elected + eliminated candidates. Clean that up.
             eliminated_names = [n for n in eliminated_names if n not in already_eliminated]
+            elected_names = [n for n in elected_names if n not in already_elected]
+
+            # And save who was elected/eliminated for future rounds
+            already_elected.update(elected_names)
             already_eliminated.update(eliminated_names)
+
             # Get how the votes change between this round and next
             vote_delta = cls.compute_vote_deltas_for_round(ut_rounds, round_i)
+
             # Use that to compute the tallyResults structure
             tally_results = cls.guess_at_tally_results(eliminated_names, elected_names, vote_delta)
+
             # Store it, completing the structure for this round
             ut_rounds[round_i]['tallyResults'] = tally_results

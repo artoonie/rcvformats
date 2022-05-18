@@ -61,10 +61,18 @@ def test_electionbuddy_conversions_succeed():
         converter.convert_to_ut_and_validate(filename)
 
 
-def test_opavote_conversion_accurate():
+def test_opavote_v10_conversion_accurate():
     """ Converts opavote JSON to standard format """
-    file_in = 'testdata/inputs/opavote/fairvote.json'
-    file_out = 'testdata/conversions/from-opavote.json'
+    file_in = 'testdata/inputs/opavote10/fairvote.json'
+    file_out = 'testdata/conversions/from-opavote-v10.json'
+    converter = opavote.OpavoteConverter()
+    _assert_conversion_correct(file_in, file_out, converter)
+
+
+def test_opavote_v11_conversion_accurate():
+    """ Converts opavote JSON to standard format """
+    file_in = 'testdata/inputs/opavote11/2022-example.json'
+    file_out = 'testdata/conversions/from-opavote-v11.json'
     converter = opavote.OpavoteConverter()
     _assert_conversion_correct(file_in, file_out, converter)
 
@@ -106,10 +114,17 @@ def test_automatic_conversions_universal_tabulator():
         nose.tools.assert_dict_equal(input_data, output_data)
 
 
-def test_automatic_conversions_opavote():
-    """ Tests that the automatic conversion works when given Opavote data """
+def test_automatic_conversions_opavote10():
+    """ Tests that the automatic conversion works when given Opavote V1.0 data """
     converter = opavote.OpavoteConverter()
-    input_dir = 'testdata/inputs/opavote'
+    input_dir = 'testdata/inputs/opavote10'
+    _assert_auto_gives_same_result_as(input_dir, converter)
+
+
+def test_automatic_conversions_opavote11():
+    """ Tests that the automatic conversion works when given Opavote V1.1 data """
+    converter = opavote.OpavoteConverter()
+    input_dir = 'testdata/inputs/opavote11'
     _assert_auto_gives_same_result_as(input_dir, converter)
 
 

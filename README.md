@@ -82,7 +82,7 @@ Validation is only on the structure of the data, not on its contents: it is poss
 rcvformats validate -i <input-filename> -s <schema-type>
 ```
 
-Valid schema validators on the command line are 'eb' (for electionbuddy files), `ov` (for opavote files), `ut` (for universal tabulator files).
+Valid schema validators on the command line are 'eb' (for electionbuddy files), `ov10` (for opavote files pre-2022), `ov11` (for opavote files post-2022), `ut` (for universal tabulator files).
 Dominion does not have a schema validation currently.
 
 #### Python
