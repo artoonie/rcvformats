@@ -1,0 +1,41 @@
+{
+    "config": {
+        "contest": "40th LD Resolutions",
+        "threshold": 7999998.666666667
+    },
+    "results": [
+        {
+            "round": 1,
+            "tally": {
+                "BBB": 13000000,
+                "Implement": 7000000,
+                "ADHD": 2000000,
+                "Tax Credit": 2000000
+            },
+            "tallyResults": [
+                {
+                    "elected": "BBB",
+                    "transfers": {
+                        "Implement": 2692305.0,
+                        "ADHD": 1538460.0,
+                        "Tax Credit": 769230.0
+                    }
+                }
+            ]
+        },
+        {
+            "round": 2,
+            "tally": {
+                "BBB": 8000001,
+                "Implement": 9692305,
+                "ADHD": 3538460,
+                "Tax Credit": 2769230
+            },
+            "tallyResults": [
+                {
+                    "elected": "Implement"
+                }
+            ]
+        }
+    ]
+}

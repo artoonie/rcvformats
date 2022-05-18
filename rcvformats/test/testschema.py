@@ -40,10 +40,16 @@ def test_universal_tabulator_formats_valid():
     _validate_files_in_dir_with('testdata/inputs/universal-tabulator', schema)
 
 
-def test_opavote_formats_valid():
-    """ Verifies that the example formats are valid """
+def test_opavote_v10_formats_valid():
+    """ Verifies that the opavote pre-2022 formats work """
     schema = opavote.SchemaV1_0()
-    _validate_files_in_dir_with('testdata/inputs/opavote', schema)
+    _validate_files_in_dir_with('testdata/inputs/opavote10', schema)
+
+
+def test_opavote_v11_formats_valid():
+    """ Verifies that the opavote post-2022 formats work """
+    schema = opavote.SchemaV1_1()
+    _validate_files_in_dir_with('testdata/inputs/opavote11', schema)
 
 
 def test_electionbuddy_formats_valid():
