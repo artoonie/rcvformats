@@ -1,0 +1,22 @@
+{
+  "config": {
+    "contest": "U.S. Representative (Special General)   ",
+    "date": "2022-08-16",
+    "threshold": 94334
+  },
+  "results": [
+    {
+      "round": 1,
+      "tally": {
+        "Begich, Nick ": 52536.0,
+        "Palin, Sarah ": 58339.0,
+        "Peltola, Mary S. ": 74817.0,
+        "Write-in ": 2974.0
+      },
+      "tallyResults": [
+      ]
+    }
+  ]
+}
+
+

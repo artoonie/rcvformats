@@ -7,6 +7,7 @@ import json
 import nose
 
 from rcvformats.conversions import automatic
+from rcvformats.conversions import dominion_first_round_only
 from rcvformats.conversions import dominion
 from rcvformats.conversions import electionbuddy
 from rcvformats.conversions import opavote
@@ -98,6 +99,14 @@ def test_dominion_conversion_accurate():
     _assert_conversion_correct(file_in, file_out, converter)
 
 
+def test_dominion_first_round_only_conversion_accurate():
+    """ Converts dominion first-round-only XML to the standard format """
+    file_in = 'testdata/inputs/dominion-first-round-only/alaska2022-special.xml'
+    file_out = 'testdata/conversions/from-dominion-first-round-only.json'
+    converter = dominion_first_round_only.DominionFirstRoundOnlyConverter()
+    _assert_conversion_correct(file_in, file_out, converter)
+
+
 def test_automatic_conversions_universal_tabulator():
     """ Tests that the automatic conversion works when given Universal Tabulator data """
     converter = automatic.AutomaticConverter()
@@ -132,6 +141,13 @@ def test_automatic_conversions_dominion():
     """ Tests that the automatic conversion works when given Dominion data """
     converter = dominion.DominionConverter()
     input_dir = 'testdata/inputs/dominion'
+    _assert_auto_gives_same_result_as(input_dir, converter)
+
+
+def test_automatic_conversions_dominion_first_round_only():
+    """ Tests that the automatic conversion works when given Dominion data """
+    converter = dominion_first_round_only.DominionFirstRoundOnlyConverter()
+    input_dir = 'testdata/inputs/dominion-first-round-only'
     _assert_auto_gives_same_result_as(input_dir, converter)
 
 
