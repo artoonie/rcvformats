@@ -8,6 +8,7 @@ import json
 
 from rcvformats.conversions.base import CouldNotConvertException
 from rcvformats.conversions.dominion import DominionConverter
+from rcvformats.conversions.dominion_first_round_only import DominionFirstRoundOnlyConverter
 from rcvformats.conversions.electionbuddy import ElectionBuddyConverter
 from rcvformats.conversions.opavote import OpavoteConverter
 from rcvformats.conversions.ut_without_transfers import UTWithoutTransfersConverter
@@ -18,11 +19,13 @@ class AutomaticConverter(Converter):
     """ Interface for converters """
 
     def __init__(self):
-        # In order of likelihood of a hit - just my guess
+        # In order of likelihood of a hit - just my guess.
+        # As this list grows, we should really consider doing something intelligent.
         self.converters = [
             DominionConverter,
             ElectionBuddyConverter,
-            OpavoteConverter
+            OpavoteConverter,
+            DominionFirstRoundOnlyConverter
         ]
 
         super().__init__()
