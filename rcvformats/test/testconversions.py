@@ -7,11 +7,12 @@ import json
 import nose
 
 from rcvformats.conversions import automatic
-from rcvformats.conversions import dominion_first_round_only
+from rcvformats.conversions import dominion_multi_converter
 from rcvformats.conversions import dominion
 from rcvformats.conversions import electionbuddy
 from rcvformats.conversions import opavote
 from rcvformats.conversions.ut_without_transfers import UTWithoutTransfersConverter
+from rcvformats.schemas import universaltabulator
 
 
 def _assert_conversion_correct(file_in, file_out, converter):
@@ -99,14 +100,6 @@ def test_dominion_conversion_accurate():
     _assert_conversion_correct(file_in, file_out, converter)
 
 
-def test_dominion_first_round_only_conversion_accurate():
-    """ Converts dominion first-round-only XML to the standard format """
-    file_in = 'testdata/inputs/dominion-first-round-only/alaska2022-special.xml'
-    file_out = 'testdata/conversions/from-dominion-first-round-only.json'
-    converter = dominion_first_round_only.DominionFirstRoundOnlyConverter()
-    _assert_conversion_correct(file_in, file_out, converter)
-
-
 def test_automatic_conversions_universal_tabulator():
     """ Tests that the automatic conversion works when given Universal Tabulator data """
     converter = automatic.AutomaticConverter()
@@ -141,13 +134,6 @@ def test_automatic_conversions_dominion():
     """ Tests that the automatic conversion works when given Dominion data """
     converter = dominion.DominionConverter()
     input_dir = 'testdata/inputs/dominion'
-    _assert_auto_gives_same_result_as(input_dir, converter)
-
-
-def test_automatic_conversions_dominion_first_round_only():
-    """ Tests that the automatic conversion works when given Dominion data """
-    converter = dominion_first_round_only.DominionFirstRoundOnlyConverter()
-    input_dir = 'testdata/inputs/dominion-first-round-only'
     _assert_auto_gives_same_result_as(input_dir, converter)
 
 
@@ -214,3 +200,18 @@ def test_add_xfer_accepts_json():
         with_transfers = converter.convert_to_ut(data)
     assert _does_all_single_elim_have_transfer_data(with_transfers)
     assert not _does_all_batch_elim_have_transfer_data(with_transfers)
+
+
+def test_explode_multi_format():
+    """ Test the single Dominion XML turns into 25 RCTab JSONs """
+    converter = dominion_multi_converter.DominionMultiConverter()
+    input_filename = 'testdata/inputs/dominion-multi-converter.xml'
+    with open(input_filename, 'r', encoding='utf-8') as file_obj:
+        results = converter.explode_to_files(file_obj)
+
+    # There are 25 contests, and they are all valid schemas
+    assert len(results) == 25
+    schema = universaltabulator.SchemaV0()
+    for named_temp_file in results.values():
+        if not schema.validate(named_temp_file.name):
+            raise schema.last_error()

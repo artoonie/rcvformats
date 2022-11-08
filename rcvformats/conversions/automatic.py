@@ -8,7 +8,6 @@ import json
 
 from rcvformats.conversions.base import CouldNotConvertException
 from rcvformats.conversions.dominion import DominionConverter
-from rcvformats.conversions.dominion_first_round_only import DominionFirstRoundOnlyConverter
 from rcvformats.conversions.electionbuddy import ElectionBuddyConverter
 from rcvformats.conversions.opavote import OpavoteConverter
 from rcvformats.conversions.ut_without_transfers import UTWithoutTransfersConverter
@@ -24,8 +23,7 @@ class AutomaticConverter(Converter):
         self.converters = [
             DominionConverter,
             ElectionBuddyConverter,
-            OpavoteConverter,
-            DominionFirstRoundOnlyConverter
+            OpavoteConverter
         ]
 
         super().__init__()
