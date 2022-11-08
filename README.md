@@ -11,7 +11,8 @@ Currently supported input formats are:
 2. The Opavote JSON format
 3. The ElectionBuddy CSV format
 4. The Dominion XLSX format
-5. The Dominion first-round-only XML format (used in Alaska)
+
+As well as the Dominion first-round-only XML format (used in Alaska), which contains the first rounds of several elections.
 
 The standardized output format is the [Universal RCV Tabulator JSON](https://www.rcvresources.org/rcv-universal-tabulator). To understand this format, look at [examples](https://github.com/artoonie/rcvformats/tree/main/testdata/inputs/universal-tabulator) or [the jsonschema](https://github.com/artoonie/rcvformats/blob/main/rcvformats/jsonschemas/universaltabulator.schema.json).
 
@@ -65,7 +66,6 @@ Valid converters are:
 ```python
 from rcvformats.converters.automatic import AutomaticConverter
 from rcvformats.conversions.dominion import DominionConverter
-from rcvformats.conversions.dominion_first_round_only import DominionFirstRoundOnlyConverter
 from rcvformats.conversions.electionbuddy import ElectionBuddyConverter
 from rcvformats.conversions.opavote import OpavoteConverter
 ```
@@ -112,6 +112,9 @@ Transfer data is useful to determine where votes went when a candidate was elimi
 If you have a file format that does not have transfer data, there are three options: you can leave it out entirely, you can assign transfers proportionally to each eliminated candidate, or you can assign only the transfers that are unambiguous.
 We recommend the last option, which prepares transfer data for any round that does not involve batch elimination.
 The second option results in fake data which cannot be relied upon for any results reporting or analyses.
+
+## Multi-converters
+Call `DominionMultiConverter.explode_to_files(fileObject)`, which will return a dictionary mapping election names to NamedTemporaryFiles.
 
 #### Command-line
 

@@ -1,22 +1,26 @@
 """
-Reads an Dominion XLSX results file, writes to the standard format
+Reads an Dominion XML file containing many contests.
 """
 
 import math
+import json
+from tempfile import NamedTemporaryFile
 import xml.etree.ElementTree as ET
 
-from rcvformats.conversions.base import Converter
 
-
-class DominionFirstRoundOnlyConverter(Converter):
+class DominionMultiConverter():  # pylint: disable=too-few-public-methods
     """
     Parses the dominion first-round-only file format as exemplified in
-    /testdata/inputs/dominionFirstRoundOnly. These are .xml files.
+    testdata/inputs/dominion-multi-converter.xml, which contains many elections.
     """
-
-    def _convert_file_object_to_ut(self, file_object):
+    @classmethod
+    def explode_to_files(cls, file_object):
+        """
+        Given the XML format with multiple elections,
+        explodes into many files, and returns a dictionary of titles to NamedTemporaryFiles.
+        """
         element_tree = ET.parse(file_object)
-        contest_id_element = element_tree.getroot() \
+        contest_id_groups = element_tree.getroot() \
             .find('{ElectionSummaryReportRPT}tabBatchIdList') \
             .find('{ElectionSummaryReportRPT}TabBatchGroup_Collection') \
             .find('{ElectionSummaryReportRPT}TabBatchGroup') \
@@ -24,14 +28,26 @@ class DominionFirstRoundOnlyConverter(Converter):
             .find('{ElectionSummaryReportRPT}Report') \
             .find('{ElectionSummaryReportRPT}contestList') \
             .find('{ElectionSummaryReportRPT}ContestIdGroup_Collection') \
-            .find('{ElectionSummaryReportRPT}ContestIdGroup')
+            .findall('{ElectionSummaryReportRPT}ContestIdGroup')
 
-        config = self._parse_config(element_tree, contest_id_element)
-        results = self._parse_vote_count(contest_id_element)
-        config['threshold'] = self._threshold_from(results)
-        urcvt_data = {'config': config, 'results': results}
+        output = {}
+        for contest_id_element in contest_id_groups:
+            config = cls._parse_config(element_tree, contest_id_element)
+            results = cls._parse_vote_count(contest_id_element)
+            config['threshold'] = cls._threshold_from(results)
+            urcvt_data = {'config': config, 'results': results}
 
-        return urcvt_data
+            # Hack - we only want the contests with >2 candidates + write-in
+            if len(results[0]['tally']) <= 3:
+                continue
+
+            # pylint: disable=consider-using-with
+            temp_file = NamedTemporaryFile(suffix=".json", mode='r+')
+            json.dump(urcvt_data, temp_file)
+            temp_file.flush()
+            output[config['contest']] = temp_file
+
+        return output
 
     @classmethod
     def _parse_config(cls, element_tree, contest_id_element):
