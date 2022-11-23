@@ -2,19 +2,17 @@
 Reads an Dominion TXT results file, used by Alaska since they have consistently
 failed to publish the easier-to-read Dominion JSON file.
 """
-from rcvformats.conversions.base import CouldNotConvertException
-from rcvformats.conversions.base import GenericGuessAtTransferConverter
-from collections import Counter
 from datetime import datetime
 import io
+
+from rcvformats.conversions.base import CouldNotConvertException
+from rcvformats.conversions.base import GenericGuessAtTransferConverter
 
 
 class DominionTxtConverter(GenericGuessAtTransferConverter):
     """
     Parses the dominion file format as exemplified in /testdata/inputs/dominion.txt
     """
-    def __init__(self):
-        super().__init__()
 
     def _convert_file_object_to_ut(self, file_object):
         # Note: don't use context manager here; we don't want to close the file_object,
@@ -32,7 +30,7 @@ class DominionTxtConverter(GenericGuessAtTransferConverter):
             # Hopefully this is fine, but if not - we'll just remove the date
             date = datetime.strptime(date, "%B %d, %Y").strftime("%Y-%m-%d")
         except ValueError:
-            # TODO - remove this hardcoded value once we figure out what
+            # After 2022-11-24, remove this hardcoded value once we figure out what
             # format alaska will actually use
             date = "2022-11-08"
 
@@ -61,7 +59,7 @@ class DominionTxtConverter(GenericGuessAtTransferConverter):
             'results': results
         }
         self.postprocess_remove_last_round_elimination(urcvt_data)
-        config['threshold'] = self.postprocess_use_standard_irv_threshold(urcvt_data)
+        self.postprocess_use_standard_irv_threshold(urcvt_data)
 
         return urcvt_data
 
@@ -120,7 +118,7 @@ class DominionTxtConverter(GenericGuessAtTransferConverter):
 
     @classmethod
     def _skip_lines(cls, decoded_buffer, num_line_to_skip):
-        for i in range(num_line_to_skip):
+        for _ in range(num_line_to_skip):
             next(decoded_buffer)
 
     @classmethod
@@ -173,7 +171,7 @@ class DominionTxtConverter(GenericGuessAtTransferConverter):
             # We don't care about negative transfers to ourself
             return None
 
-        if to_name == 'Overvotes' or to_name == "Exhausted":
+        if to_name in ('Overvotes', "Exhausted"):
             # We only care about valid votes going forward
             return None
 
@@ -194,4 +192,4 @@ class DominionTxtConverter(GenericGuessAtTransferConverter):
             tally_result['transfers'][xfer_data['to']] = xfer_data['n_votes']
             return
 
-        raise CouldNotConvertException("Couldn't find %s to transfer votes to" % xfer_data['from'])
+        raise CouldNotConvertException(f"Couldn't find {xfer_data['from']} to transfer votes to")

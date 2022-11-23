@@ -79,6 +79,7 @@ class Converter(abc.ABC):
         if utils.is_filename(data):
             with open(data, 'rb') as file_object:
                 return self._convert_file_object_to_ut(file_object)
+        return None
 
     def _convert_json_to_ut(self, json_data):
         """
@@ -104,12 +105,12 @@ class Converter(abc.ABC):
         data['results'][-1]['tallyResults'] = last_round_tally_results
 
     @classmethod
-    def postprocess_use_standard_irv_threshold(self, data):
+    def postprocess_use_standard_irv_threshold(cls, data):
         """
         Set the threshold based on (last round active votes) / (num winners + 1)
         """
         total = sum(data['results'][-1]['tally'].values())
-        return math.floor(total / 2 + 1)
+        data['config']['threshold'] = math.floor(total / 2 + 1)
 
 
 class GenericGuessAtTransferConverter(Converter):

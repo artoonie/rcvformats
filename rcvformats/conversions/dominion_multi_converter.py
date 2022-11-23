@@ -6,6 +6,8 @@ import json
 from tempfile import NamedTemporaryFile
 import xml.etree.ElementTree as ET
 
+from rcvformats.conversions.base import Converter
+
 
 class DominionMultiConverter():  # pylint: disable=too-few-public-methods
     """
@@ -39,8 +41,8 @@ class DominionMultiConverter():  # pylint: disable=too-few-public-methods
             if len(results[0]['tally']) <= 3:
                 continue
 
-            cls.postprocess_remove_last_round_elimination(urcvt_data)
-            cls.postprocess_set_threshold(urcvt_data)
+            Converter.postprocess_remove_last_round_elimination(urcvt_data)
+            Converter.postprocess_use_standard_irv_threshold(urcvt_data)
 
             # pylint: disable=consider-using-with
             temp_file = NamedTemporaryFile(suffix=".json", mode='r+')
