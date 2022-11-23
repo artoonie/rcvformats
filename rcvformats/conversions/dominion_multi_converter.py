@@ -2,10 +2,11 @@
 Reads an Dominion XML file containing many contests.
 """
 
-import math
 import json
 from tempfile import NamedTemporaryFile
 import xml.etree.ElementTree as ET
+
+from rcvformats.conversions.base import Converter
 
 
 class DominionMultiConverter():  # pylint: disable=too-few-public-methods
@@ -34,12 +35,14 @@ class DominionMultiConverter():  # pylint: disable=too-few-public-methods
         for contest_id_element in contest_id_groups:
             config = cls._parse_config(element_tree, contest_id_element)
             results = cls._parse_vote_count(contest_id_element)
-            config['threshold'] = cls._threshold_from(results)
             urcvt_data = {'config': config, 'results': results}
 
             # Hack - we only want the contests with >2 candidates + write-in
             if len(results[0]['tally']) <= 3:
                 continue
+
+            Converter.postprocess_remove_last_round_elimination(urcvt_data)
+            Converter.postprocess_use_standard_irv_threshold(urcvt_data)
 
             # pylint: disable=consider-using-with
             temp_file = NamedTemporaryFile(suffix=".json", mode='r+')
@@ -81,8 +84,3 @@ class DominionMultiConverter():  # pylint: disable=too-few-public-methods
             "tally": tally,
             "tallyResults": []
         }]
-
-    @classmethod
-    def _threshold_from(cls, results):
-        total = sum(results[0]['tally'].values())
-        return math.floor(total / 2 + 1)

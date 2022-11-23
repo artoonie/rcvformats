@@ -11,8 +11,9 @@ Currently supported input formats are:
 2. The Opavote JSON format
 3. The ElectionBuddy CSV format
 4. The Dominion XLSX format
+5. The Dominion TXT format
 
-As well as the Dominion first-round-only XML format (used in Alaska), which contains the first rounds of several elections.
+As well as the Dominion first-round-only XML format (used in Alaska), which contains the first rounds of several elections. All other converters contain the results of just one election per file.
 
 The standardized output format is the [Universal RCV Tabulator JSON](https://www.rcvresources.org/rcv-universal-tabulator). To understand this format, look at [examples](https://github.com/artoonie/rcvformats/tree/main/testdata/inputs/universal-tabulator) or [the jsonschema](https://github.com/artoonie/rcvformats/blob/main/rcvformats/jsonschemas/universaltabulator.schema.json).
 
@@ -65,7 +66,8 @@ except Exception as e:
 Valid converters are:
 ```python
 from rcvformats.converters.automatic import AutomaticConverter
-from rcvformats.conversions.dominion import DominionConverter
+from rcvformats.conversions.dominion_json import DominionJsonConverter
+from rcvformats.conversions.dominion_txt import DominionTxtConverter
 from rcvformats.conversions.electionbuddy import ElectionBuddyConverter
 from rcvformats.conversions.opavote import OpavoteConverter
 ```
