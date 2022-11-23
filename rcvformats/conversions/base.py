@@ -3,6 +3,7 @@ Interface and exceptions for all converters
 """
 
 import abc
+import math
 
 from rcvformats.common import utils
 from rcvformats.schemas import universaltabulator
@@ -38,6 +39,9 @@ class Converter(abc.ABC):
         :raises CouldNotConvertException: If the conversion could not complete
         """
         ut_format = self.convert_to_ut(filename_or_fileobj)
+        # Note: To debug, uncomment the line below:
+        # ut_format = self.convert_to_ut_without_exceptions(filename_or_fileobj)
+
         if not self.ut_schema.validate_schema_and_logic(ut_format):
             raise CouldNotConvertException(self.ut_schema.last_error())
 
@@ -55,19 +59,26 @@ class Converter(abc.ABC):
         :raises CouldNotOpenFileException: If the file couldn't be opened
         """
         try:
-            if isinstance(data, dict):
-                return self._convert_json_to_ut(data)
-            if utils.is_file_obj(data):
-                return self._convert_file_object_to_ut(data)
-            if utils.is_filename(data):
-                with open(data, 'rb') as file_object:
-                    return self._convert_file_object_to_ut(file_object)
+            return self.convert_to_ut_without_exceptions(data)
         except CouldNotConvertException as known_error:
             raise known_error
         except Exception as unknown_error:
             raise CouldNotConvertException(str(unknown_error)) from unknown_error
 
         raise CouldNotOpenFileException(f"Could not open {data}")
+
+    def convert_to_ut_without_exceptions(self, data):
+        """
+        See :func:`~convert_to_ut`. This is the workhorse, without exceptions.
+        To debug. call this in :func:`~convert_to_ut_and_validate`
+        """
+        if isinstance(data, dict):
+            return self._convert_json_to_ut(data)
+        if utils.is_file_obj(data):
+            return self._convert_file_object_to_ut(data)
+        if utils.is_filename(data):
+            with open(data, 'rb') as file_object:
+                return self._convert_file_object_to_ut(file_object)
 
     def _convert_json_to_ut(self, json_data):
         """
@@ -80,6 +91,25 @@ class Converter(abc.ABC):
         """
         Just like func:`~convert_to_ut`, but only accepting a file object
         """
+
+    @classmethod
+    def postprocess_remove_last_round_elimination(cls, data):
+        """
+        When there are two candidates left, Dominion marks the loser among them as
+        "eliminated", whereas the URCVT format does not.
+        Updates data to remove any last-round eliminations
+        """
+        last_round_tally_results = data['results'][-1]['tallyResults']
+        last_round_tally_results = [t for t in last_round_tally_results if 'eliminated' not in t]
+        data['results'][-1]['tallyResults'] = last_round_tally_results
+
+    @classmethod
+    def postprocess_use_standard_irv_threshold(self, data):
+        """
+        Set the threshold based on (last round active votes) / (num winners + 1)
+        """
+        total = sum(data['results'][-1]['tally'].values())
+        return math.floor(total / 2 + 1)
 
 
 class GenericGuessAtTransferConverter(Converter):

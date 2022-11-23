@@ -1,0 +1,38 @@
+{
+  "config": {
+    "contest": "U.S. Representative (Special General)",
+    "date": "2022-08-16",
+    "threshold": 88647
+  },
+  "results": [
+    {
+      "round": 1,
+      "tally": {
+        "Begich, Nick": 53810.0,
+        "Palin, Sarah": 58973.0,
+        "Peltola, Mary S.": 75799.0
+      },
+      "tallyResults": [
+        {
+          "eliminated": "Begich, Nick",
+          "transfers": {
+            "Palin, Sarah": 27053.0,
+            "Peltola, Mary S.": 15467.0
+          }
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "tally": {
+        "Palin, Sarah": 86026.0,
+        "Peltola, Mary S.": 91266.0
+      },
+      "tallyResults": [
+        {
+          "elected": "Peltola, Mary S."
+        }
+      ]
+    }
+  ]
+}

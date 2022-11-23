@@ -100,7 +100,15 @@ def test_dominion_conversion_accurate():
     """ Converts dominion_json XLSX to the standard format """
     file_in = 'testdata/inputs/dominion_json/las-cruces-mayor.xlsx'
     file_out = 'testdata/conversions/from-dominion.json'
-    converter = dominion.DominionConverter()
+    converter = dominion_json.DominionJsonConverter()
+    _assert_conversion_correct(file_in, file_out, converter)
+
+
+def test_dominion_txt():
+    """ Converts dominion_txt TXT file to the standard format """
+    file_in = 'testdata/inputs/dominion.txt'
+    file_out = 'testdata/conversions/from-dominion-txt.json'
+    converter = dominion_txt.DominionTxtConverter()
     _assert_conversion_correct(file_in, file_out, converter)
 
 
