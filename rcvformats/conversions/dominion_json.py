@@ -8,9 +8,9 @@ from openpyxl.cell.read_only import EmptyCell, ReadOnlyCell
 from rcvformats.conversions.base import GenericGuessAtTransferConverter
 
 
-class DominionConverter(GenericGuessAtTransferConverter):
+class DominionJsonConverter(GenericGuessAtTransferConverter):
     """
-    Parses the dominion file format as exemplified in /testdata/inputs/dominion
+    Parses the dominion file format as exemplified in /testdata/inputs/dominion-json
     These are .xlsx files
     """
 
@@ -149,8 +149,8 @@ class DominionConverter(GenericGuessAtTransferConverter):
 
         workbook.close()
 
-        self._postprocess_remove_last_round_elimination(urcvt_data)
-        self._postprocess_set_threshold(urcvt_data)
+        self.postprocess_remove_last_round_elimination(urcvt_data)
+        self._postprocess_set_threshold_from_spreadsheet(urcvt_data)
         return urcvt_data
 
     def _parse_config(self):
@@ -314,21 +314,10 @@ class DominionConverter(GenericGuessAtTransferConverter):
                 'tallyResults': tally_results})
         return results
 
-    @classmethod
-    def _postprocess_remove_last_round_elimination(cls, data):
+    def _postprocess_set_threshold_from_spreadsheet(self, data):
         """
-        When there are two candidates left, Dominion marks the loser among them as
-        "eliminated", whereas the URCVT format does not.
-        Updates data to remove any last-round eliminations
-        """
-        last_round_tally_results = data['results'][-1]['tallyResults']
-        last_round_tally_results = [t for t in last_round_tally_results if 'eliminated' not in t]
-        data['results'][-1]['tallyResults'] = last_round_tally_results
-
-    def _postprocess_set_threshold(self, data):
-        """
-        Set the threshold based on (last round active votes) / (num winners + 1)
-        Which is also just listed on the table of per-round info
+        The threshold is always listed on the table of per-round info
+        We don't guess here - if we can't find it, we leave it blank.
         """
         last_round_col = self.data_per_round[-1].column
         maybe_threshold_row = self.row_constants.maybe_threshold

@@ -7,7 +7,8 @@ loop through all schemas which will be needlessly slow.
 import json
 
 from rcvformats.conversions.base import CouldNotConvertException
-from rcvformats.conversions.dominion import DominionConverter
+from rcvformats.conversions.dominion_json import DominionJsonConverter
+from rcvformats.conversions.dominion_txt import DominionTxtConverter
 from rcvformats.conversions.electionbuddy import ElectionBuddyConverter
 from rcvformats.conversions.opavote import OpavoteConverter
 from rcvformats.conversions.ut_without_transfers import UTWithoutTransfersConverter
@@ -21,9 +22,10 @@ class AutomaticConverter(Converter):
         # In order of likelihood of a hit - just my guess.
         # As this list grows, we should really consider doing something intelligent.
         self.converters = [
-            DominionConverter,
+            DominionJsonConverter,
             ElectionBuddyConverter,
-            OpavoteConverter
+            OpavoteConverter,
+            DominionTxtConverter
         ]
 
         super().__init__()
