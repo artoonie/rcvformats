@@ -19,26 +19,30 @@ class DominionTxtConverter(GenericGuessAtTransferConverter):
         # which TextIOWrapper's context manager will do
         decoded_buffer = io.TextIOWrapper(file_object, encoding='utf-16-le')
 
-        self._skip_lines(decoded_buffer, 4)
+        self._skip_lines(decoded_buffer, 1)
+        line2 = self._get_next_line_exploded(decoded_buffer)
 
-        # Line 5: date
-        date = next(decoded_buffer)
+        # Line 2: date
+        date = line2[3]
         date = date.strip()
         try:
-            # We only have one example file, so I'm not sure if the day will
-            # be posted as 8 or 08 for the Alaska 2022 general.
-            # Hopefully this is fine, but if not - we'll just remove the date
-            date = datetime.strptime(date, "%B %d, %Y").strftime("%Y-%m-%d")
+            # This format is used by alaska but it is not universal
+            # Format: 8-Nov-22
+            dateparts = date.split('-')
+            dateday = int(dateparts[0])
+            datemonth = datetime.strptime(dateparts[1], "%b").strftime("%m")
+            dateyear = datetime.strptime(dateparts[2], "%y").strftime("%Y")
+            date = f"{dateyear}-{datemonth:02d}-{dateday:02d}"
         except ValueError:
             # After 2022-11-24, remove this hardcoded value once we figure out what
             # format alaska will actually use
             date = "2022-11-08"
 
-        self._skip_lines(decoded_buffer, 3)
+        self._skip_lines(decoded_buffer, 2)
 
-        # Line 9: the first section is the title
-        line9 = self._get_next_line_exploded(decoded_buffer)
-        title = line9[0]
+        # Line 5: the first section is the title
+        line5 = self._get_next_line_exploded(decoded_buffer)
+        title = line5[0]
 
         # Skip 5 ilnes to get to the list of rounds
         self._skip_lines(decoded_buffer, 5)
