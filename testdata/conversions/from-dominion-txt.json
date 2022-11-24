@@ -1,23 +1,23 @@
 {
   "config": {
-    "contest": "U.S. Representative (Special General)",
-    "date": "2022-08-16",
-    "threshold": 88647
+    "contest": "House District 11",
+    "date": "2022-11-08",
+    "threshold": 3617
   },
   "results": [
     {
       "round": 1,
       "tally": {
-        "Begich, Nick": 53810.0,
-        "Palin, Sarah": 58973.0,
-        "Peltola, Mary S.": 75799.0
+        "Featherly, Walter T.": 3480.0,
+        "Bieling, Ross P.": 1183.0,
+        "Coulombe, Julie": 2998.0
       },
       "tallyResults": [
         {
-          "eliminated": "Begich, Nick",
+          "eliminated": "Bieling, Ross P.",
           "transfers": {
-            "Palin, Sarah": 27053.0,
-            "Peltola, Mary S.": 15467.0
+            "Featherly, Walter T.": 81.0,
+            "Coulombe, Julie": 673.0
           }
         }
       ]
@@ -25,12 +25,12 @@
     {
       "round": 2,
       "tally": {
-        "Palin, Sarah": 86026.0,
-        "Peltola, Mary S.": 91266.0
+        "Featherly, Walter T.": 3561.0,
+        "Coulombe, Julie": 3671.0
       },
       "tallyResults": [
         {
-          "elected": "Peltola, Mary S."
+          "elected": "Coulombe, Julie"
         }
       ]
     }
