@@ -8,7 +8,7 @@ from openpyxl.cell.read_only import EmptyCell, ReadOnlyCell
 from rcvformats.conversions.base import GenericGuessAtTransferConverter
 
 
-class DominionJsonConverter(GenericGuessAtTransferConverter):
+class DominionXlsxConverter(GenericGuessAtTransferConverter):
     """
     Parses the dominion file format as exemplified in /testdata/inputs/dominion-json
     These are .xlsx files
