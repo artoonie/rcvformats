@@ -72,12 +72,12 @@ ElectionBuddy to Universal Tabulator
 Dominion to Universal Tabulator
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: conversions.dominion_json
+.. automodule:: conversions.dominion_txt
    :members:
    :private-members:
    :show-inheritance:
 
-.. automodule:: conversions.dominion_txt
+.. automodule:: conversions.dominion_xlsx
    :members:
    :private-members:
    :show-inheritance:

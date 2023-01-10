@@ -66,8 +66,8 @@ except Exception as e:
 Valid converters are:
 ```python
 from rcvformats.converters.automatic import AutomaticConverter
-from rcvformats.conversions.dominion_json import DominionJsonConverter
 from rcvformats.conversions.dominion_txt import DominionTxtConverter
+from rcvformats.conversions.dominion_xlsx import DominionXlsxConverter
 from rcvformats.conversions.electionbuddy import ElectionBuddyConverter
 from rcvformats.conversions.opavote import OpavoteConverter
 ```

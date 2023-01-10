@@ -8,8 +8,8 @@ import nose
 
 from rcvformats.conversions import automatic
 from rcvformats.conversions import dominion_multi_converter
-from rcvformats.conversions import dominion_json
 from rcvformats.conversions import dominion_txt
+from rcvformats.conversions import dominion_xlsx
 from rcvformats.conversions import electionbuddy
 from rcvformats.conversions import opavote
 from rcvformats.conversions.ut_without_transfers import UTWithoutTransfersConverter
@@ -97,10 +97,10 @@ def test_electionbuddy_conversion_accurate():
 
 
 def test_dominion_conversion_accurate():
-    """ Converts dominion_json XLSX to the standard format """
-    file_in = 'testdata/inputs/dominion_json/las-cruces-mayor.xlsx'
+    """ Converts dominion_xlsx XLSX to the standard format """
+    file_in = 'testdata/inputs/dominion_xlsx/las-cruces-mayor.xlsx'
     file_out = 'testdata/conversions/from-dominion.json'
-    converter = dominion_json.DominionJsonConverter()
+    converter = dominion_xlsx.DominionXlsxConverter()
     _assert_conversion_correct(file_in, file_out, converter)
 
 
@@ -144,8 +144,8 @@ def test_automatic_conversions_opavote11():
 
 def test_automatic_conversions_dominion():
     """ Tests that the automatic conversion works when given Dominion data """
-    converter = dominion_json.DominionJsonConverter()
-    input_dir = 'testdata/inputs/dominion_json'
+    converter = dominion_xlsx.DominionXlsxConverter()
+    input_dir = 'testdata/inputs/dominion_xlsx'
     _assert_auto_gives_same_result_as(input_dir, converter)
 
 
