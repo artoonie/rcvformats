@@ -6,6 +6,7 @@ from openpyxl.cell.cell import MergedCell
 from openpyxl.cell.read_only import EmptyCell, ReadOnlyCell
 
 from rcvformats.conversions.base import GenericGuessAtTransferConverter
+from rcvformats.schemas.base import DataError
 
 
 class DominionXlsxConverter(GenericGuessAtTransferConverter):
@@ -91,7 +92,7 @@ class DominionXlsxConverter(GenericGuessAtTransferConverter):
                     continue
 
                 return row
-            raise Exception("Could not find the end of the headers")
+            raise DataError("Could not find the end of the headers")
 
         def _find_row_of_inactive_ballots(self, sheet, num_candidates):
             """
@@ -105,7 +106,7 @@ class DominionXlsxConverter(GenericGuessAtTransferConverter):
             for row in range(row + min_num_rows, row + max_num_rows):
                 if sheet.cell(row, 1).value == "Non Transferable Total":
                     return row
-            raise Exception("Could not find the end of the non-transferable rows")
+            raise DataError("Could not find the end of the non-transferable rows")
 
         def _try_to_find_row_of_threshold(self, sheet, inactive_row):
             """
@@ -192,7 +193,7 @@ class DominionXlsxConverter(GenericGuessAtTransferConverter):
 
             col += 1
             if col >= max_cols:
-                raise Exception("This document is not in the correct format..."
+                raise DataError("This document is not in the correct format..."
                                 "or there are more than 500 rounds")
 
             # Is this a merged cell? If so, ignore it.
@@ -241,7 +242,7 @@ class DominionXlsxConverter(GenericGuessAtTransferConverter):
             if candidate_name == end_of_candidates_marker:
                 break
             if row == max_num_rows:
-                raise Exception("This document is not in the correct format..."
+                raise DataError("This document is not in the correct format..."
                                 "or there are more than 500 candidates")
             cell = self.sheet['A' + str(row)]
             name = cell.value

@@ -74,7 +74,7 @@ class ElectionBuddyConverter(GenericGuessAtTransferConverter):
             return rounds[round_i]['threshold']
 
         last_round = rounds[-1]
-        num_voters_in_last_round = sum([v for k, v in last_round['candidates'].items()])
+        num_voters_in_last_round = sum(v for (k, v) in last_round['candidates'].items())
         return num_voters_in_last_round / 2.0
 
     @classmethod
@@ -109,5 +109,5 @@ class ElectionBuddyConverter(GenericGuessAtTransferConverter):
         if last_round['threshold']:
             return last_round['threshold']
 
-        num_voters_in_last_round = sum([v for k, v in last_round['candidates'].items()])
+        num_voters_in_last_round = sum(v for (k, v) in last_round['candidates'].items())
         return num_voters_in_last_round / 2.0

@@ -66,9 +66,8 @@ class OpavoteConverter(GenericGuessAtTransferConverter):
                 'round': round_i + 1,
                 'tally': {}
             }
-            for candidate_i, _ in enumerate(candidate_names):
+            for candidate_i, name in enumerate(candidate_names):
                 votes = self._votes_on_round(candidate_i, rounds, round_i)
-                name = candidate_names[candidate_i]
                 ut_round['tally'][name] = votes
             ut_rounds.append(ut_round)
 
