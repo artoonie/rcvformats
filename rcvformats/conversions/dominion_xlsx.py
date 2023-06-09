@@ -31,13 +31,6 @@ class DominionXlsxConverter(GenericGuessAtTransferConverter):
         """
         Data for the row number that various items are on
         """
-        # Define constants
-        # the -12 is because New Mexico files have 12 rows of headers,
-        # so the first number is the actual row number, then we subtract num_header_rows,
-        # just for readability.
-        SEAT_TITLE_NUM_ROWS_AFTER_HEADER = 12 - 12
-        ROUND_LABELS_NUM_ROWS_AFTER_HEADER = 32 - 12
-        FIRST_CANDIDATE_NUM_ROWS_AFTER_HEADER = 34 - 12
         ROW_AFTER_INACTIVE_FOR_THRESHOLD = 1
 
         def __init__(self):
@@ -56,14 +49,28 @@ class DominionXlsxConverter(GenericGuessAtTransferConverter):
             # Row that has the number of inactive ("non transferrable") ballots at each round
             self.inactive_ballots = None
 
-        def find_rows_before_summary_table(self, sheet):
+        def find_rows_before_summary_table(self, workbook):
             """
             Fills in values for rows before the summary table
             """
-            offset = self._count_num_header_rows(sheet)
-            self.round_label = self.ROUND_LABELS_NUM_ROWS_AFTER_HEADER + offset
-            self.first_candidate = self.FIRST_CANDIDATE_NUM_ROWS_AFTER_HEADER + offset
-            self.seat_title = self.SEAT_TITLE_NUM_ROWS_AFTER_HEADER + offset
+            # Define constants
+            # the -12 is because New Mexico files have 12 rows of headers,
+            # so the first number is the actual row number, then we subtract num_header_rows,
+            # just for readability.
+            SEAT_TITLE_NUM_ROWS_AFTER_HEADER = 12 - 12
+            ROUND_LABELS_NUM_ROWS_AFTER_HEADER = 32 - 12
+            FIRST_CANDIDATE_NUM_ROWS_AFTER_HEADER = 34 - 12
+
+            offset = self._count_num_header_rows(workbook[workbook.sheetnames[0]])
+            self.seat_title = SEAT_TITLE_NUM_ROWS_AFTER_HEADER + offset
+
+            # v5.17+: first candidadte is on the second sheet at a fixed position
+            if (len(workbook.sheetnames) != 1):
+                self.first_candidate = 7
+                self.round_label = 5
+            else:
+                self.first_candidate = FIRST_CANDIDATE_NUM_ROWS_AFTER_HEADER + offset
+                self.round_label = ROUND_LABELS_NUM_ROWS_AFTER_HEADER + offset
 
         def find_rows_after_summary_table(self, sheet, num_candidates):
             """
@@ -136,16 +143,21 @@ class DominionXlsxConverter(GenericGuessAtTransferConverter):
 
     def _convert_file_object_to_ut(self, file_object):
         workbook = load_workbook(file_object)  # note: somehow, readonly is 2x slower
-        self.sheet = workbook.active
 
-        self.row_constants.find_rows_before_summary_table(self.sheet)
+        # Round-by-round results are always on the last sheet.
+        # On Dominion >v5.17, they go in the second sheet; otherwise, they're on the
+        # first and only sheet.
+        self.sheet = workbook[workbook.sheetnames[-1]]
+        self.row_constants.find_rows_before_summary_table(workbook)
         self.candidates = self._parse_candidates()
         self.row_constants.find_rows_after_summary_table(self.sheet, len(self.candidates))
-
         self.data_per_round = self._parse_rounds()
-
-        config = self._parse_config()
         results = self._get_vote_counts_per_candidate()
+
+        # Config headers are always on the first sheet.
+        self.sheet = workbook[workbook.sheetnames[0]]
+        config = self._parse_config()
+
         urcvt_data = {'config': config, 'results': results}
 
         workbook.close()
