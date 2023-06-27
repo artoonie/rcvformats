@@ -147,7 +147,12 @@ class DominionXlsxConverter(GenericGuessAtTransferConverter):
         # Round-by-round results are always on the last sheet.
         # On Dominion >v5.17, they go in the second sheet; otherwise, they're on the
         # first and only sheet.
-        self.sheet = workbook[workbook.sheetnames[-1]]
+        config_sheet = workbook[workbook.sheetnames[0]]
+        if len(workbook.sheetnames) == 1:
+            round_by_round_sheet = config_sheet
+        else:
+            round_by_round_sheet = workbook[workbook.sheetnames[1]]
+        self.sheet = round_by_round_sheet
         self.row_constants.find_rows_before_summary_table(workbook)
         self.candidates = self._parse_candidates()
         self.row_constants.find_rows_after_summary_table(self.sheet, len(self.candidates))
@@ -160,10 +165,10 @@ class DominionXlsxConverter(GenericGuessAtTransferConverter):
 
         urcvt_data = {'config': config, 'results': results}
 
+        self.postprocess_remove_last_round_elimination(urcvt_data)
+        self._postprocess_set_threshold_from_spreadsheet(urcvt_data, round_by_round_sheet)
         workbook.close()
 
-        self.postprocess_remove_last_round_elimination(urcvt_data)
-        self._postprocess_set_threshold_from_spreadsheet(urcvt_data)
         return urcvt_data
 
     def _parse_config(self):
@@ -327,7 +332,7 @@ class DominionXlsxConverter(GenericGuessAtTransferConverter):
                 'tallyResults': tally_results})
         return results
 
-    def _postprocess_set_threshold_from_spreadsheet(self, data):
+    def _postprocess_set_threshold_from_spreadsheet(self, data, sheet):
         """
         The threshold is always listed on the table of per-round info
         We don't guess here - if we can't find it, we leave it blank.
@@ -335,5 +340,5 @@ class DominionXlsxConverter(GenericGuessAtTransferConverter):
         last_round_col = self.data_per_round[-1].column
         maybe_threshold_row = self.row_constants.maybe_threshold
         if maybe_threshold_row is not None:
-            threshold = self.sheet.cell(maybe_threshold_row, last_round_col).value
+            threshold = sheet.cell(maybe_threshold_row, last_round_col).value
             data['config']['threshold'] = threshold
