@@ -31,13 +31,6 @@ class DominionXlsxConverter(GenericGuessAtTransferConverter):
         """
         Data for the row number that various items are on
         """
-        # Define constants
-        # the -12 is because New Mexico files have 12 rows of headers,
-        # so the first number is the actual row number, then we subtract num_header_rows,
-        # just for readability.
-        SEAT_TITLE_NUM_ROWS_AFTER_HEADER = 12 - 12
-        ROUND_LABELS_NUM_ROWS_AFTER_HEADER = 32 - 12
-        FIRST_CANDIDATE_NUM_ROWS_AFTER_HEADER = 34 - 12
         ROW_AFTER_INACTIVE_FOR_THRESHOLD = 1
 
         def __init__(self):
@@ -56,14 +49,28 @@ class DominionXlsxConverter(GenericGuessAtTransferConverter):
             # Row that has the number of inactive ("non transferrable") ballots at each round
             self.inactive_ballots = None
 
-        def find_rows_before_summary_table(self, sheet):
+        def find_rows_before_summary_table(self, workbook):
             """
             Fills in values for rows before the summary table
             """
-            offset = self._count_num_header_rows(sheet)
-            self.round_label = self.ROUND_LABELS_NUM_ROWS_AFTER_HEADER + offset
-            self.first_candidate = self.FIRST_CANDIDATE_NUM_ROWS_AFTER_HEADER + offset
-            self.seat_title = self.SEAT_TITLE_NUM_ROWS_AFTER_HEADER + offset
+            # Define constants
+            # the -12 is because New Mexico files have 12 rows of headers,
+            # so the first number is the actual row number, then we subtract num_header_rows,
+            # just for readability.
+            seat_title_num_rows_after_header = 12 - 12
+            round_labels_num_rows_after_header = 32 - 12
+            first_candidate_num_rows_after_header = 34 - 12
+
+            offset = self._count_num_header_rows(workbook[workbook.sheetnames[0]])
+            self.seat_title = seat_title_num_rows_after_header + offset
+
+            # v5.17+: first candidate is on the second sheet at a fixed position
+            if len(workbook.sheetnames) != 1:
+                self.first_candidate = 7
+                self.round_label = 5
+            else:
+                self.first_candidate = first_candidate_num_rows_after_header + offset
+                self.round_label = round_labels_num_rows_after_header + offset
 
         def find_rows_after_summary_table(self, sheet, num_candidates):
             """
@@ -136,22 +143,32 @@ class DominionXlsxConverter(GenericGuessAtTransferConverter):
 
     def _convert_file_object_to_ut(self, file_object):
         workbook = load_workbook(file_object)  # note: somehow, readonly is 2x slower
-        self.sheet = workbook.active
 
-        self.row_constants.find_rows_before_summary_table(self.sheet)
+        # Round-by-round results are always on the last sheet.
+        # On Dominion >v5.17, they go in the second sheet; otherwise, they're on the
+        # first and only sheet.
+        config_sheet = workbook[workbook.sheetnames[0]]
+        if len(workbook.sheetnames) == 1:
+            round_by_round_sheet = config_sheet
+        else:
+            round_by_round_sheet = workbook[workbook.sheetnames[1]]
+        self.sheet = round_by_round_sheet
+        self.row_constants.find_rows_before_summary_table(workbook)
         self.candidates = self._parse_candidates()
         self.row_constants.find_rows_after_summary_table(self.sheet, len(self.candidates))
-
         self.data_per_round = self._parse_rounds()
-
-        config = self._parse_config()
         results = self._get_vote_counts_per_candidate()
+
+        # Config headers are always on the first sheet.
+        self.sheet = workbook[workbook.sheetnames[0]]
+        config = self._parse_config()
+
         urcvt_data = {'config': config, 'results': results}
 
+        self.postprocess_remove_last_round_elimination(urcvt_data)
+        self._postprocess_set_threshold_from_spreadsheet(urcvt_data, round_by_round_sheet)
         workbook.close()
 
-        self.postprocess_remove_last_round_elimination(urcvt_data)
-        self._postprocess_set_threshold_from_spreadsheet(urcvt_data)
         return urcvt_data
 
     def _parse_config(self):
@@ -315,7 +332,7 @@ class DominionXlsxConverter(GenericGuessAtTransferConverter):
                 'tallyResults': tally_results})
         return results
 
-    def _postprocess_set_threshold_from_spreadsheet(self, data):
+    def _postprocess_set_threshold_from_spreadsheet(self, data, sheet):
         """
         The threshold is always listed on the table of per-round info
         We don't guess here - if we can't find it, we leave it blank.
@@ -323,5 +340,5 @@ class DominionXlsxConverter(GenericGuessAtTransferConverter):
         last_round_col = self.data_per_round[-1].column
         maybe_threshold_row = self.row_constants.maybe_threshold
         if maybe_threshold_row is not None:
-            threshold = self.sheet.cell(maybe_threshold_row, last_round_col).value
+            threshold = sheet.cell(maybe_threshold_row, last_round_col).value
             data['config']['threshold'] = threshold

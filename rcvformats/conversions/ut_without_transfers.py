@@ -50,7 +50,13 @@ class UTWithoutTransfersConverter(GenericGuessAtTransferConverter):
     def _convert_tally_string_to_decimal(cls, rounds):
         for round_data in rounds:
             for person in round_data['tally']:
-                round_data['tally'][person] = float(round_data['tally'][person])
+                tally_non_float = round_data['tally'][person]
+                if tally_non_float is None:
+                    if person == "Inactive Ballots":
+                        tally_non_float = 0
+                    else:
+                        raise ValueError("Must have values for every candidate")
+                round_data['tally'][person] = float(tally_non_float)
 
     def _fill_in_tallyresults(self, rounds):
         """ Fill out rounds['tallyResults'] based on rounds['tally'] """
