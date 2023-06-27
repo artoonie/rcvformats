@@ -57,20 +57,20 @@ class DominionXlsxConverter(GenericGuessAtTransferConverter):
             # the -12 is because New Mexico files have 12 rows of headers,
             # so the first number is the actual row number, then we subtract num_header_rows,
             # just for readability.
-            SEAT_TITLE_NUM_ROWS_AFTER_HEADER = 12 - 12
-            ROUND_LABELS_NUM_ROWS_AFTER_HEADER = 32 - 12
-            FIRST_CANDIDATE_NUM_ROWS_AFTER_HEADER = 34 - 12
+            seat_title_num_rows_after_header = 12 - 12
+            round_labels_num_rows_after_header = 32 - 12
+            first_candidate_num_rows_after_header = 34 - 12
 
             offset = self._count_num_header_rows(workbook[workbook.sheetnames[0]])
-            self.seat_title = SEAT_TITLE_NUM_ROWS_AFTER_HEADER + offset
+            self.seat_title = seat_title_num_rows_after_header + offset
 
-            # v5.17+: first candidadte is on the second sheet at a fixed position
-            if (len(workbook.sheetnames) != 1):
+            # v5.17+: first candidate is on the second sheet at a fixed position
+            if len(workbook.sheetnames) != 1:
                 self.first_candidate = 7
                 self.round_label = 5
             else:
-                self.first_candidate = FIRST_CANDIDATE_NUM_ROWS_AFTER_HEADER + offset
-                self.round_label = ROUND_LABELS_NUM_ROWS_AFTER_HEADER + offset
+                self.first_candidate = first_candidate_num_rows_after_header + offset
+                self.round_label = round_labels_num_rows_after_header + offset
 
         def find_rows_after_summary_table(self, sheet, num_candidates):
             """
