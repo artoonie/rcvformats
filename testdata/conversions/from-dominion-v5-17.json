@@ -1,0 +1,109 @@
+{
+  "config": {
+    "date": "2023-11-07",
+    "contest": "Best Ice Cream Flavor",
+    "office": "Best Ice Cream Flavor",
+    "threshold": 145
+  },
+  "results": [
+    {
+      "round": 1,
+      "tally": {
+        "Vanilla": 90,
+        "Chocolate": 72,
+        "Strawberry": 72,
+        "Neapolitan": 0,
+        "Rainbow Sherbet": 18,
+        "Chocolate Chip": 36,
+        "Butter Pecan": 0,
+        "Write-in": 0,
+        "Inactive Ballots": 0
+      },
+      "tallyResults": [
+        {
+          "eliminated": "Neapolitan"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "tally": {
+        "Vanilla": 90,
+        "Chocolate": 72,
+        "Strawberry": 72,
+        "Rainbow Sherbet": 18,
+        "Chocolate Chip": 36,
+        "Butter Pecan": 0,
+        "Write-in": 0,
+        "Inactive Ballots": 0
+      },
+      "tallyResults": [
+        {
+          "eliminated": "Butter Pecan"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "tally": {
+        "Vanilla": 90,
+        "Chocolate": 72,
+        "Strawberry": 72,
+        "Rainbow Sherbet": 18,
+        "Chocolate Chip": 36,
+        "Write-in": 0,
+        "Inactive Ballots": 0
+      },
+      "tallyResults": [
+        {
+          "eliminated": "Rainbow Sherbet"
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "tally": {
+        "Vanilla": 90,
+        "Chocolate": 72,
+        "Strawberry": 72,
+        "Chocolate Chip": 54,
+        "Write-in": 0,
+        "Inactive Ballots": 0
+      },
+      "tallyResults": [
+        {
+          "eliminated": "Chocolate Chip"
+        }
+      ]
+    },
+    {
+      "round": 5,
+      "tally": {
+        "Vanilla": 126,
+        "Chocolate": 72,
+        "Strawberry": 90,
+        "Write-in": 0,
+        "Inactive Ballots": 0
+      },
+      "tallyResults": [
+        {
+          "eliminated": "Chocolate"
+        }
+      ]
+    },
+    {
+      "round": 6,
+      "tally": {
+        "Vanilla": 126,
+        "Strawberry": 162,
+        "Write-in": 0,
+        "Inactive Ballots": 0
+      },
+      "tallyResults": [
+        {
+          "elected": "Strawberry"
+        }
+      ]
+    }
+  ]
+}

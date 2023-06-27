@@ -96,10 +96,18 @@ def test_electionbuddy_conversion_accurate():
     _assert_conversion_correct(file_in, file_out, converter)
 
 
-def test_dominion_conversion_accurate():
+def test_dominion_old_conversion_accurate():
     """ Converts dominion_xlsx XLSX to the standard format """
     file_in = 'testdata/inputs/dominion_xlsx/las-cruces-mayor.xlsx'
     file_out = 'testdata/conversions/from-dominion.json'
+    converter = dominion_xlsx.DominionXlsxConverter()
+    _assert_conversion_correct(file_in, file_out, converter)
+
+
+def test_dominion_v5_17_conversion_accurate():
+    """ Converts dominion_xlsx XLSX to the standard format """
+    file_in = 'testdata/inputs/dominion_xlsx/v5_17_multi.xlsx'
+    file_out = 'testdata/conversions/from-dominion-v5-17.json'
     converter = dominion_xlsx.DominionXlsxConverter()
     _assert_conversion_correct(file_in, file_out, converter)
 
