@@ -140,4 +140,4 @@ except Exception as e:
 In addition to data normalization for RCV Summary formats, we would like similar functionality for cast vote records.
 
 ## Running test suite
-`pip3 install -r requirements-test.txt`, then run `python3 -m nose` in the root directory, and `./scripts/lint.sh` to run the linter.
+`pip3 install -r requirements-test.txt`, then run `pytest rcvformats/test` in the root directory, and `./scripts/lint.sh` to run the linter.
