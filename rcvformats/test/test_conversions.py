@@ -4,7 +4,6 @@ Integration tests for conversions between file formats
 
 import os
 import json
-import nose
 
 from rcvformats.conversions import automatic
 from rcvformats.conversions import dominion_multi_converter
@@ -18,14 +17,13 @@ from rcvformats.schemas import universaltabulator
 
 def _assert_conversion_correct(file_in, file_out, converter):
     """ Asserts that converter.convert_to_ut(file_in) = file_out """
-    nose.tools.assert_dict_equal.__self__.maxDiff = None
     actual_data = converter.convert_to_ut_and_validate(file_in)
     with open(file_out, 'r', encoding='utf-8') as file_obj:
         expected_data = json.load(file_obj)
 
         # Ensure the file buffers aren't closed
         file_obj.seek(0)
-    nose.tools.assert_dict_equal(actual_data, expected_data)
+    assert actual_data == expected_data
 
 
 def _files_in_dir(input_dir):
@@ -52,7 +50,7 @@ def _assert_auto_gives_same_result_as(input_dir, direct_converter):
         expected_data_without_xfer = direct_converter.convert_to_ut_and_validate(filepath)
         expected_data = add_transfer_converter.fill_in_tally_data(expected_data_without_xfer)
 
-        nose.tools.assert_dict_equal(auto_data, expected_data)
+        assert auto_data == expected_data
 
 
 def test_electionbuddy_conversions_succeed():
@@ -133,7 +131,7 @@ def test_automatic_conversions_universal_tabulator():
         with open(filepath, 'r', encoding='utf-8') as input_file:
             input_data = json.load(input_file)
 
-        nose.tools.assert_dict_equal(input_data, output_data)
+        assert input_data == output_data
 
 
 def test_automatic_conversions_opavote10():
