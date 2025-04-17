@@ -24,6 +24,7 @@ class SchemaV0(GenericJsonSchema):
         self.check_candidate_leaves_after_elimination(data)
         self.check_unique_candidate_names(data)
         self.check_no_empty_candidate_names(data)
+        self.check_votes_never_decrease_except_surplus(data)
 
     @classmethod
     def check_unique_candidate_names(cls, data):
@@ -53,9 +54,37 @@ class SchemaV0(GenericJsonSchema):
         last_round_tally_results = data['results'][-1]['tallyResults']
         for tally_result in last_round_tally_results:
             if 'eliminated' in tally_result:
-                raise DataError("There cannot be an elimination on the last round. "
-                                "All eliminations require one additonal round to signify where the "
-                                "votes have been transferred to.")
+                raise DataError(
+                    "There cannot be an elimination on the last round. "
+                    "All eliminations require one additional round to signify where the "
+                    "votes have been transferred to.")
+
+    @classmethod
+    def check_votes_never_decrease_except_surplus(cls, data):
+        """
+        Check that the vote counts never decrease, except in the case of surplus transfers.
+        """
+        first_round_tally = data['results'][0]['tally']
+        prev_round_counts = first_round_tally
+        prev_round_winners = set()
+        for round_num, result in enumerate(data['results']):
+            tally = result['tally']
+            for name in tally:
+                this_round_count = float(tally[name])
+                if this_round_count >= float(prev_round_counts[name]):
+                    continue
+
+                if this_round_count == 0:
+                    raise DataError("Vote count should not decrease to zero. Candidate "
+                                    f"{name} should be eliminated on Round {round_num}.")
+                if name not in prev_round_winners:
+                    raise DataError("Vote counts should never decrease except in the case of "
+                                    f"a surplus transfer. Candidate {name}'s votes decreased "
+                                    f"from {prev_round_counts[name]} to {this_round_count} "
+                                    f"on Round {round_num+1}, but they were not elected on "
+                                    f"Round {round_num}.")
+            prev_round_winners = {tr['elected'] for tr in result['tallyResults'] if 'elected' in tr}
+            prev_round_counts = tally
 
     @classmethod
     def check_candidate_leaves_after_elimination(cls, data):
@@ -73,7 +102,5 @@ class SchemaV0(GenericJsonSchema):
                         "already eliminated. After a candidate is eliminated, they should "
                         "be removed from all future vote tallies.")
 
-            tally_results = result['tallyResults']
-            for tally_result in tally_results:
-                if 'eliminated' in tally_result:
-                    eliminated_so_far.add(tally_result['eliminated'])
+            eliminated_so_far.update(
+                {tr['eliminated'] for tr in result['tallyResults'] if 'eliminated' in tr})

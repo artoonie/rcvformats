@@ -7,7 +7,7 @@
     "threshold" : 600
   },
   "results" : [ {
-    "round" : 1.0,
+    "round" : 1,
     "tally" : {
       "Vanilla" : 500.0,
       "Blackberry" : 350.0,
@@ -24,7 +24,7 @@
     } ]
   },
   {
-    "round" : 2.0,
+    "round" : 2,
     "tally" : {
       "Vanilla" : 550.0,
       "Blackberry" : 375.0,
@@ -39,7 +39,7 @@
     } ]
   },
   {
-    "round" : 3.0,
+    "round" : 3,
     "tally" : {
       "Vanilla" : 575.0,
       "Blackberry" : 625.0

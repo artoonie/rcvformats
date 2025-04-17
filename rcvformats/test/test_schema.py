@@ -84,3 +84,25 @@ def test_can_pass_raw_json():
         data = json.load(fileobj)
     schema = universaltabulator.SchemaV0()
     assert schema.validate(data)
+
+
+def test_vote_counts_decrease_message():
+    """ Verifies that if the vote counts decrease, an error is raised """
+    filename = 'testdata/inputs/ut-without-transfers/with-decimals.json'
+    with open(filename, 'r', encoding='utf-8') as fileobj:
+        data = json.load(fileobj)
+    data['results'][1]['tally']['Vanilla'] = data['results'][0]['tally']['Vanilla'] - 1
+    schema = universaltabulator.SchemaV0()
+    assert not schema.validate(data)
+    assert 'should never decrease' in str(schema.last_error())
+
+
+def test_vote_counts_decrease_to_zero_message():
+    """ Verifies that if the vote counts decrease to zero, a more specific error is raised """
+    filename = 'testdata/inputs/ut-without-transfers/with-decimals.json'
+    with open(filename, 'r', encoding='utf-8') as fileobj:
+        data = json.load(fileobj)
+    data['results'][1]['tally']['Vanilla'] = 0
+    schema = universaltabulator.SchemaV0()
+    assert not schema.validate(data)
+    assert 'should be eliminated' in str(schema.last_error())

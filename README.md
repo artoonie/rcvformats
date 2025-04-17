@@ -1,4 +1,5 @@
-![Python package](https://github.com/artoonie/rcvformats/workflows/Python%20package/badge.svg)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/rcvformats)
+![GitHub branch status](https://img.shields.io/github/checks-status/artoonie/rcvformats/main)
 [![Documentation Status](https://readthedocs.org/projects/rcvformats/badge/?version=latest)](https://rcvformats.readthedocs.io/en/latest/?badge=latest)
 
 # RCV Formats
