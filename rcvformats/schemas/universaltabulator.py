@@ -24,7 +24,7 @@ class SchemaV0(GenericJsonSchema):
         self.check_candidate_leaves_after_elimination(data)
         self.check_unique_candidate_names(data)
         self.check_no_empty_candidate_names(data)
-        self.check_votes_only_increase_except_surplus(data)
+        self.check_votes_never_decrease_except_surplus(data)
 
     @classmethod
     def check_unique_candidate_names(cls, data):
@@ -54,12 +54,16 @@ class SchemaV0(GenericJsonSchema):
         last_round_tally_results = data['results'][-1]['tallyResults']
         for tally_result in last_round_tally_results:
             if 'eliminated' in tally_result:
-                raise DataError("There cannot be an elimination on the last round. "
-                                "All eliminations require one additional round to signify where the "
-                                "votes have been transferred to.")
+                raise DataError(
+                    "There cannot be an elimination on the last round. "
+                    "All eliminations require one additional round to signify where the "
+                    "votes have been transferred to.")
 
     @classmethod
-    def check_votes_only_increase_except_surplus(cls, data):
+    def check_votes_never_decrease_except_surplus(cls, data):
+        """
+        Check that the vote counts never decrease, except in the case of surplus transfers.
+        """
         first_round_tally = data['results'][0]['tally']
         prev_round_counts = first_round_tally
         prev_round_winners = set()
@@ -73,7 +77,7 @@ class SchemaV0(GenericJsonSchema):
                 if this_round_count == 0:
                     raise DataError("Vote count should not decrease to zero. Candidate "
                                     f"{name} should be eliminated on Round {round_num}.")
-                elif name not in prev_round_winners:
+                if name not in prev_round_winners:
                     raise DataError("Vote counts should never decrease except in the case of "
                                     f"a surplus transfer. Candidate {name}'s votes decreased "
                                     f"from {prev_round_counts[name]} to {this_round_count} "
